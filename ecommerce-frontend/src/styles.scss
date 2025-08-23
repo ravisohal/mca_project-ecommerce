@@ -1,1 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
+/* Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global tokens (light/dark ready) */
+:root {
+  --surface: #ffffff;
+  --surface-2: #f7f7f8;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --primary: #2563eb;
+  --primary-contrast: #ffffff;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  @apply bg-[var(--surface-2)] text-[var(--text)] antialiased;
+}
+
+/* Utility for container width */
+.container {
+  @apply max-w-7xl mx-auto px-4 md:px-6 lg:px-8;
+}

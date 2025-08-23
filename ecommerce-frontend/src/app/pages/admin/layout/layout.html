@@ -1,0 +1,23 @@
+<div class="min-h-screen grid grid-cols-[16rem_1fr]">
+  <aside class="bg-white shadow-card">
+    <div class="p-6 border-b">
+      <h2 class="text-xl font-semibold">Admin Panel</h2>
+      <p class="text-sm text-[var(--text-muted)]">Manage your store</p>
+    </div>
+    <nav class="p-4 space-y-2">
+      <a routerLink="dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
+      <a routerLink="products" routerLinkActive="active" class="nav-link">Products</a>
+      <a routerLink="categories" routerLinkActive="active" class="nav-link">Categories</a>
+      <a routerLink="orders" routerLinkActive="active" class="nav-link">Orders</a>
+      <a routerLink="users" routerLinkActive="active" class="nav-link">Users</a>
+    </nav>
+  </aside>
+  <main class="bg-[var(--surface-2)]">
+    <header class="bg-white border-b p-4 flex items-center justify-between">
+      <h1 class="text-lg font-semibold">Admin</h1>
+    </header>
+    <section class="p-6">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

@@ -1,0 +1,13 @@
+<div class="auth-card">
+  <h2>Create your account</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="submit()">
+    <label>Username</label>
+    <input formControlName="username" placeholder="jane_doe" />
+    <label>Email</label>
+    <input formControlName="email" type="email" placeholder="jane@example.com" />
+    <label>Password</label>
+    <input formControlName="password" type="password" placeholder="••••••••" />
+    <button type="submit" [disabled]="loading || registerForm.invalid">Register</button>
+    <p *ngIf="error" class="error">{{ error }}</p>
+  </form>
+</div>

@@ -1,0 +1,9 @@
+<button
+    type="button"
+    class="px-4 py-2 rounded-lg font-medium text-white"
+    [class.bg-blue-600]="variant() === 'primary'"
+    [class.bg-gray-600]="variant() === 'secondary'"
+    [disabled]="disabled()"
+>
+    <ng-content />
+ </button>

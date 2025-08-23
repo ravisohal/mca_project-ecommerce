@@ -1,0 +1,12 @@
+<div *ngFor="let order of orders()" class="mt-3 flex items-center gap-2">
+  <label class="text-sm text-gray-600">Update status:</label>
+  <select #statusSelect
+          class="border rounded-lg px-3 py-1"
+          (change)="setStatus(order, statusSelect.value)">
+    <option [selected]="order.status==='Pending'">Pending</option>
+    <option [selected]="order.status==='Paid'">Paid</option>
+    <option [selected]="order.status==='In-Fulfillment'">In-Fulfillment</option>
+    <option [selected]="order.status==='Completed'">Completed</option>
+    <option [selected]="order.status==='Cancelled'">Cancelled</option>
+  </select>
+</div>

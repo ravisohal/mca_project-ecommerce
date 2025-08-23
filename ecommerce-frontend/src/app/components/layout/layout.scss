@@ -1,0 +1,45 @@
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  background: #1976d2;
+  color: white;
+  padding: 0.5rem 1rem;
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+
+      li a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+
+        &.active {
+          border-bottom: 2px solid white;
+        }
+      }
+    }
+  }
+}
+
+.app-content {
+  flex: 1;
+  padding: 1rem;
+}
+
+.app-footer {
+  background: #f5f5f5;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.875rem;
+}

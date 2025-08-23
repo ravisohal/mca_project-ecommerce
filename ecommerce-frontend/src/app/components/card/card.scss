@@ -1,0 +1,49 @@
+// src/app/shared/card/card.scss
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.card-container {
+  @apply bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1;
+
+  img {
+    @apply w-full h-48 object-cover object-center transition-transform duration-500 ease-in-out;
+  }
+
+  .card-content {
+    @apply p-6;
+  }
+
+  .card-header {
+    @apply flex items-start justify-between mb-2;
+  }
+
+  .product-title {
+    @apply text-xl font-extrabold text-gray-900 truncate;
+  }
+
+  .category-tag {
+    @apply text-xs uppercase font-bold text-blue-600 bg-blue-100 px-3 py-1 rounded-full;
+  }
+
+  .product-description {
+    @apply text-gray-600 text-sm mb-4 line-clamp-2;
+  }
+
+  .price-discount-row {
+    @apply flex items-baseline justify-between;
+  }
+
+  .product-price {
+    @apply text-3xl font-bold text-blue-700;
+  }
+
+  .product-discount {
+    @apply text-sm font-bold text-red-500;
+  }
+
+  .add-to-cart-btn {
+    @apply mt-6 px-4 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105;
+  }
+}

@@ -1,0 +1,43 @@
+<div class="container py-8 space-y-6">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-semibold">Products</h2>
+      <p class="text-sm text-[var(--text-muted)]">Browse and filter items</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <label class="text-sm">Category</label>
+      <select class="rounded-lg border px-3 py-2 bg-white" (change)="onCategoryChange($event)" [value]="selectedCategory()">
+        <option value="all">All</option>
+        @for (category of categories(); track category.id) {
+          <option [value]="category.name">{{ category.name }}</option>
+        }
+      </select>
+
+      <input type="search" placeholder="Search products..." class="rounded-lg border px-3 py-2 bg-white" (input)="onSearch($event)">
+
+      <select class="rounded-lg border px-3 py-2 bg-white" (change)="onSortChange($event)">
+        <option value="newest">Sort: Newest</option>
+        <option value="priceAsc">Price ↑</option>
+        <option value="priceDesc">Price ↓</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    @for (product of products(); track product.id) {
+      <app-card [product]="product"></app-card>
+    } @empty {
+      <p class="text-[var(--text-muted)]">No products found.</p>
+    }
+  </div>
+
+  <div class="flex items-center justify-center gap-2">
+    <button class="px-4 py-2 rounded-lg border bg-white disabled:opacity-50" (click)="prevPage()" [disabled]="currentPage() === 0">
+      Previous
+    </button>
+    <button class="px-4 py-2 rounded-lg border bg-white disabled:opacity-50"  (click)="nextPage()" [disabled]="isLastPage()">
+      Next
+    </button>
+  </div>
+</div>

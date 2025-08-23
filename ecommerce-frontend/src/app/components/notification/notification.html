@@ -1,0 +1,10 @@
+<div class="notification-container">
+  @for (n of notifications(); track n) {
+    <div 
+      class="notification"
+      [ngClass]="n.type">
+      <span class="message">{{ n.message }}</span>
+      <button class="close-btn" (click)="dismiss(n)">✕</button>
+    </div>
+  }
+</div>
