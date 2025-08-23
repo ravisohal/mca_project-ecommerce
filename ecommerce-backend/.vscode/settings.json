@@ -1,0 +1,16 @@
+{
+    "cSpell.words": [
+        "ecommerce",
+        "jjwt",
+        "jsonwebtoken",
+        "Jwts",
+        "projectlombok",
+        "Ravi",
+        "sohal",
+        "Springdoc",
+        "springframework",
+        "webmvc"
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic"
+}
