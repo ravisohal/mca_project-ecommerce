@@ -1,13 +1,14 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiService } from './api';
 import { User } from '../models/user';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly api = inject(ApiService);
-  private readonly loginUrl = '/auth/login';
+  private readonly apiService = inject(ApiService);
+  private readonly apiUrl = '/auth';
 
   // Signals for auth state
   private readonly _user = signal<User | null>(null);
@@ -16,13 +17,12 @@ export class AuthService {
   user = this._user.asReadonly();
   token = this._token.asReadonly();
 
-  login(email: string, password: string) {
-    return this.api.post<{ user: User; token: string }>(this.loginUrl, { email, password })
-      .subscribe(({ user, token }) => {
-        this._user.set(user);
-        this._token.set(token);
-        localStorage.setItem('token', token);
-      });
+  login(username: string, password: string): Observable<any> {
+    return this.apiService.post(`${this.apiUrl}/login`, { username, password });
+  }
+
+  register(user: { username: string; email: string; password: string }): Observable<any> {
+    return this.apiService.post(`${this.apiUrl}/register`, user);
   }
 
   logout() {
@@ -31,9 +31,6 @@ export class AuthService {
     localStorage.removeItem('token');
   }
 
-  register(arg0: { username: string | null | undefined; email: string | null | undefined; password: string | null | undefined; }) {
-    throw new Error('Method not implemented.');
-  }
   getToken(): string | null {
     return localStorage.getItem('token');
   }

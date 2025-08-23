@@ -31,7 +31,6 @@ export class ProductListComponent implements OnInit {
   constructor() {
     this.loadCategories();
     effect(() => {
-      // Trigger fetch on filter changes
       const page = this.currentPage();
       const cat = this.selectedCategory();
       const q = this.searchTerm();

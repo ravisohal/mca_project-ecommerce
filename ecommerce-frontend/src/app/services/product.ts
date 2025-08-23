@@ -37,7 +37,7 @@ export class ProductService {
       url += `&sort=${sortValue}`;
     }
     
-    if (params.category) {
+    if (params.category && params.category !== 'all') {
       url += `&category=${params.category}`;
     }
     if (params.name) {

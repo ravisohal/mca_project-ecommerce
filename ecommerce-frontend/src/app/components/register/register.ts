@@ -29,8 +29,12 @@ export class RegisterComponent {
     this.loading = true;
     this.error = '';
     const { username, email, password } = this.registerForm.value;
-    this.authService.register({ username, email, password }).subscribe({
-      next: () => {
+    this.authService.register({
+      username: username ?? '',
+      email: email ?? '',
+      password: password ?? ''
+    }).subscribe({
+      next: (res) => {
         this.loading = false;
         this.success = true;
         this.router.navigate(['/login'], { queryParams: { registered: true } });
