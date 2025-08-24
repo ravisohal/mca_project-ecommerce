@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart';
+import { CartItem } from '../../models/cart-item';
 
 @Component({
   selector: 'app-cart',
@@ -12,15 +13,35 @@ import { CartService } from '../../services/cart';
 })
 export class CartComponent {
   private cartService = inject(CartService);
-  items = this.cartService.items();
-  total = this.cartService.total();
+  items = signal<CartItem[]>([]);
+  total = signal(0);
+
+  constructor() {
+    this.refreshCart();
+  }
+
+  refreshCart() {
+    this.items.set(this.cartService.items());
+    this.total.set(this.cartService.total());
+  }
 
   removeFromCart(item: any) {
     this.cartService.remove(item.product.id);
+    this.refreshCart();
   }
 
   setQty(item: any, qty: number) {
-    this.cartService.setQuantity(item.product.id, qty);
+    if (qty <= 0) {
+      this.cartService.remove(item.product.id);
+    } else {
+      this.cartService.setQuantity(item.product.id, qty);
+    }
+    this.refreshCart();
+  }
+
+  clearCart() {
+    this.cartService.clear();
+    this.refreshCart();
   }
 
   checkout() {

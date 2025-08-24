@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, inject, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product';
 import { CartService } from '../../services/cart';
@@ -11,11 +11,16 @@ import { CartService } from '../../services/cart';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardComponent {
-  @Input({ required: true }) product!: Product
+  @Input({ required: true }) product!: Product;
+  @Output() clicked = new EventEmitter<any>();
 
   private cartService = inject(CartService);
 
   onAddToCart(): void {
     this.cartService.add(this.product);
+  }
+
+  handleClick() {
+    this.clicked.emit(this.product);
   }
 }

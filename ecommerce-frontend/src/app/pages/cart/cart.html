@@ -1,40 +1,40 @@
-<div class="max-w-4xl mx-auto p-6">
-  <h1 class="text-2xl font-bold mb-6">Your Cart</h1>
+<div class="cart-container">
+  <h1 class="cart-title">Your Shopping Cart</h1>
+  <p class="cart-subtitle">{{ items().length }} items</p>
 
-  <div
-    *ngFor="let item of items"
-    class="flex items-center justify-between bg-white p-4 rounded-xl shadow mb-4"
-  >
-    <div class="flex items-center space-x-4">
-      <img
-        [src]="item.product.imageUrl"
-        alt="{{ item.product.name }}"
-        class="w-16 h-16 object-cover rounded-lg"
-      />
-      <div>
-        <h2 class="font-semibold text-gray-800">{{ item.product.name }}</h2>
-        <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
+  @if (items().length > 0) {
+    <div class="cart-items">
+      @for (item of items(); track item.product.id) {
+        <div class="cart-item-card">
+          <div class="item-info">
+            <h3 class="item-name">{{ item.product.name }}</h3>
+            <p class="item-price">₹{{ item.product.price | number:'1.2-2' }}</p>
+          </div>
+          <div class="item-actions">
+            <div class="quantity-control">
+              <button class="qty-btn" (click)="setQty(item, item.quantity - 1)">-</button>
+              <span class="qty-display">{{ item.quantity }}</span>
+              <button class="qty-btn" (click)="setQty(item, item.quantity + 1)">+</button>
+            </div>
+            <button class="remove-btn" (click)="removeFromCart(item)">
+              <span class="trash-icon">🗑️</span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="cart-summary">
+      <p class="total">Total: ₹{{ total() | number:'1.2-2' }}</p>
+      <div class="action-buttons">
+        <button class="clear-btn" (click)="clearCart()">Clear Cart</button>
+        <button class="checkout-btn" (click)="checkout()">Checkout</button>
       </div>
     </div>
-    <div class="flex items-center space-x-4">
-      <span class="font-bold text-indigo-600">₹{{ item.product.price }}</span>
-      <button
-        (click)="removeFromCart(item.product.id)"
-        class="text-red-500 hover:text-red-700"
-      >
-        Remove
-      </button>
+  } @else {
+    <div class="empty-cart">
+      <p>Your cart is empty.</p>
+      <a routerLink="/products" class="shop-link">Go shopping!</a>
     </div>
-  </div>
-
-  <div class="text-right mt-6">
-    <span class="text-lg font-bold">Total: ${{ total }}</span>
-    <button
-      (click)="checkout()"
-      class="ml-4 bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700"
-    >
-      Checkout
-    </button>
-  </div>
+  }
 </div>
-

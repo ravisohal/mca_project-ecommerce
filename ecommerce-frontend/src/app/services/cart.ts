@@ -1,6 +1,6 @@
-import { Cart } from './../models/cart';
 import { Injectable, computed, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Cart } from './../models/cart';
 import { CartItem } from '../models/cart-item';
 import { Product } from '../models/product';
 import { Address } from '../models/address';
@@ -11,6 +11,8 @@ import { tap } from 'rxjs/operators';
 
 
 const CART_KEY = 'app_cart_v1';
+const EXPIRATION_KEY = 'cart_expiration';
+const EXPIRATION_DURATION_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -48,8 +50,8 @@ export class CartService {
 
   setQuantity(productId: number, qty: number) {
     const items = this._items().map((i) =>
-      i.product.id === productId ? { ...i, quantity: Math.max(1, qty) } : i
-    );
+      i.product.id === productId ? { ...i, quantity: Math.max(0, qty) } : i
+    ).filter(i => i.quantity > 0); // Remove if qty <= 0
     this._items.set(items);
     this.persist();
   }
@@ -67,11 +69,12 @@ export class CartService {
   checkout() {
     const req: CreateOrderRequest = {
       items: this._items().map((i) => ({ 
-                productId: i.product.id, 
-                productName: i.product.name, 
-                quantity: i.quantity, 
-                price: i.product.price, 
-                discount: i.product.discount })),
+        productId: i.product.id, 
+        productName: i.product.name, 
+        quantity: i.quantity, 
+        price: i.product.price, 
+        discount: i.product.discount 
+      })),
       totalAmount: this.total(),
       customerEmail: this.currentUser()?.email,
     };
@@ -82,6 +85,16 @@ export class CartService {
 
   private load(): CartItem[] {
     if (isPlatformBrowser(this.platformId)) {
+      const expirationTime = localStorage.getItem(EXPIRATION_KEY);
+      const currentTime = new Date().getTime();
+      
+      // Check if the expiration time exists and if it has passed
+      if (expirationTime && (currentTime > parseInt(expirationTime, 10))) {
+        localStorage.removeItem(CART_KEY);
+        localStorage.removeItem(EXPIRATION_KEY);
+        return [];
+      }
+
       const json = localStorage.getItem(CART_KEY);
       return json ? JSON.parse(json) : [];
     }
@@ -90,7 +103,25 @@ export class CartService {
 
   private persist() {
     if (isPlatformBrowser(this.platformId)) {
+      const expirationTimestamp = new Date().getTime() + EXPIRATION_DURATION_MS;
+      localStorage.setItem(EXPIRATION_KEY, expirationTimestamp.toString());
       localStorage.setItem(CART_KEY, JSON.stringify(this._items()));
     }
   }
+
+  placeOrder() {
+    const req: CreateOrderRequest = {
+      items: this._items().map(item => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price,
+        discount: item.product.discount
+      })),
+      totalAmount: this.total(),
+      customerEmail: this.currentUser()?.email,
+    };
+    return this.orderService.create(req);
+  }
+
 }

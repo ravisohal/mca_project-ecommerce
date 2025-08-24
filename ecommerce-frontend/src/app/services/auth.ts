@@ -38,4 +38,5 @@ export class AuthService {
   isAuthenticated() {
     return this._token() !== null;
   }
+
 }

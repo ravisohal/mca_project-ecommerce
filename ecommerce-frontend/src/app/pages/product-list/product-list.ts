@@ -5,6 +5,9 @@ import { CartService } from '../../services/cart';
 import { Product } from '../../models/product';
 import { Category } from '../../models/category';
 import { CardComponent } from '../../components/card/card';
+import { InteractionService } from '../../services/interaction';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -17,7 +20,8 @@ import { CardComponent } from '../../components/card/card';
 export class ProductListComponent implements OnInit {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
-
+  private interactionService = inject(InteractionService);
+  
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   currentPage = signal(0);
@@ -28,31 +32,34 @@ export class ProductListComponent implements OnInit {
   searchTerm = signal<string>('');
   sortBy = signal<'priceAsc' | 'priceDesc' | 'newest'>('newest');
 
+  private filters = signal({
+    page: this.currentPage(),
+    category: this.selectedCategory(),
+    searchTerm: this.searchTerm(),
+    sortBy: this.sortBy()
+  });
+
   constructor() {
     this.loadCategories();
-    effect(() => {
-      const page = this.currentPage();
-      const cat = this.selectedCategory();
-      const q = this.searchTerm();
-      const sort = this.sortBy();
-      this.load();
-    });
-  }
-  ngOnInit(): void {
-    this.load();
-  }
 
-  load() {
-    this.productService.list({ 
-        page: this.currentPage(), 
-        size: this.pageSize, sort: this.sortBy(), 
-        category: encodeURIComponent(this.selectedCategory()), 
-        name: encodeURIComponent(this.searchTerm()) 
-      }).subscribe(res => {
+    toObservable(this.filters)
+      .pipe(
+        switchMap(filters => this.productService.list({ 
+            page: filters.page, 
+            size: this.pageSize, 
+            sort: filters.sortBy, 
+            category: encodeURIComponent(filters.category), 
+            name: encodeURIComponent(filters.searchTerm) 
+          }))
+      )
+      .subscribe(res => {
         this.products.set(res.content);
         this.currentPage.set(res.number);
         this.isLastPage.set(res.last);
-    });
+      });
+  }
+  ngOnInit(): void {
+    this.updateFilters();
   }
 
   loadCategories() {
@@ -64,19 +71,23 @@ export class ProductListComponent implements OnInit {
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value.trim();
     this.searchTerm.set(value);
-    this.load();
+    this.updateFilters();
   }
 
   onSortChange(event: Event) {
     const sortValue = (event.target as HTMLSelectElement).value as 'priceAsc' | 'priceDesc' | 'newest';
     this.sortBy.set(sortValue);
-    this.load();
+    this.updateFilters();
   }
 
   onCategoryChange(event: Event) {
     const categoryName = (event.target as HTMLSelectElement).value;
     this.selectedCategory.set(categoryName);
-    this.load();
+    this.updateFilters();
+  }
+
+  onProductClick(product: Product) {
+    this.interactionService.log('CLICK', { productId: product.id });
   }
 
   addToCart(p: Product) {
@@ -85,11 +96,21 @@ export class ProductListComponent implements OnInit {
 
   prevPage() {
     this.currentPage.set(this.currentPage() - 1);
-    this.load();
+    this.updateFilters();
   }
 
   nextPage() {
     this.currentPage.set(this.currentPage() + 1);
-    this.load();
+    this.updateFilters();
   }
+
+  private updateFilters() {
+    this.filters.set({
+      page: this.currentPage(),
+      category: this.selectedCategory(),
+      searchTerm: this.searchTerm(),
+      sortBy: this.sortBy()
+    });
+  }
+
 }

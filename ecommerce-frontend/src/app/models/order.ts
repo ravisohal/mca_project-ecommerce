@@ -20,4 +20,6 @@ export interface Order {
   customerEmail?: string;
   shippingAddress?: Address;
   orderItems: OrderItem[];
+  createdAt: Date;
+  updatedAt: Date;
 }
