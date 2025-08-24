@@ -1,42 +1,72 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiService } from './api';
 import { User } from '../models/user';
-import { Observable } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
+import { UserService } from './user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly apiService = inject(ApiService);
-  private readonly apiUrl = '/auth';
+  private readonly userService = inject(UserService);
+  private readonly authUrl = '/auth';
+  private readonly usersUrl = '/users';
 
-  // Signals for auth state
-  private readonly _user = signal<User | null>(null);
-  private readonly _token = signal<string | null>(null);
+  user = signal<User | null>(null);
+  token = signal<string | null>(null);
 
-  user = this._user.asReadonly();
-  token = this._token.asReadonly();
-
-  login(username: string, password: string): Observable<any> {
-    return this.apiService.post(`${this.apiUrl}/login`, { username, password });
+  isAuthenticated() {
+    return this.token() !== null;
   }
 
-  register(user: { username: string; email: string; password: string }): Observable<any> {
-    return this.apiService.post(`${this.apiUrl}/register`, user);
-  }
-
-  logout() {
-    this._user.set(null);
-    this._token.set(null);
-    localStorage.removeItem('token');
+  isAdmin() {
+    return this.user()?.role === 'admin';
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  isAuthenticated() {
-    return this._token() !== null;
+  private setUserAndToken(token: string) {
+    localStorage.setItem('token', token);
+    this.token.set(token);
+
+    // Decode token to get user info. This is a simplified example.
+    const decodedPayload = JSON.parse(atob(token.split('.')[1]));
+    
+    // Create a partial user object with only the fields available from the token payload.
+    const partialUser: Partial<User> = {
+      id: decodedPayload.sub,
+      username: decodedPayload.username,
+      role: decodedPayload.role
+    };
+    
+    // You'll need to fetch the full user details from a backend endpoint
+    // once authenticated to populate the rest of the fields (email, address, etc.).
+    this.user.set(partialUser as User);
+  }
+
+  login(username: string, password: string): Observable<any> {
+    return this.apiService.post<any>(`${this.authUrl}/login`, { username, password }).pipe(
+      switchMap((response) => {
+        this.setUserAndToken(response.token);
+        this.userService.getUserProfile(username).subscribe({
+          next: (fullUser) => { this.user.set(fullUser); },
+        });
+        return of(response);
+      })
+    );
+  }
+
+  register(user: User): Observable<any> {
+    return this.apiService.post(`${this.usersUrl}/register`, user);
+  }
+
+  logout() {
+    this.user.set(null);
+    this.token.set(null);
+    localStorage.removeItem('token');
   }
 
 }

@@ -14,18 +14,18 @@ import { Order } from '../../models/order';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomerDashboardComponent {
-  private authService = inject(AuthService);
-  private orderService = inject(OrderService);
+  protected authService = inject(AuthService);
+  protected orderService = inject(OrderService);
   protected readonly loading = signal<boolean>(true);
   protected readonly orders = signal<Order[]>([]);
+  protected readonly user = this.authService.user();
 
   ngOnInit() {
-    const user = this.authService.user();
-    if (!user) { 
+    if (!this.user) {
       this.loading.set(false);
       return;
     }
-    this.orderService.listByUser(user.id).subscribe({
+    this.orderService.listByUser(this.user.id).subscribe({
       next: (res) => { this.orders.set(res.items ?? res as any); this.loading.set(false); },
       error: () => this.loading.set(false)
     });

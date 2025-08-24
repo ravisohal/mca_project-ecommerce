@@ -63,12 +63,12 @@ public class UserController {
                                               @RequestBody UserRegistrationRequest request) {
         logger.info("Received request to register new user: {}", request.getUsername());
         try {
-            // Create User and Address objects from the request DTO
             User newUser = new User();
             newUser.setUsername(request.getUsername());
             newUser.setPassword(request.getPassword()); // Raw password, will be hashed by service
             newUser.setEmail(request.getEmail());
             newUser.setPhoneNumber(request.getPhoneNumber());
+            newUser.setRole("customer"); // Default role
 
             User registeredUser = userService.registerUser(newUser, request.getShippingAddress(), request.getBillingAddress());
             return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
@@ -152,6 +152,7 @@ public class UserController {
     public ResponseEntity<User> getUserByUsername(@Parameter(description = "Username of the user to retrieve") @PathVariable String username) {
         logger.debug("Received request to get user by username: {}", username);
         Optional<User> user = userService.getUserByUsername(username);
+        user.ifPresent(u -> u.setPassword(null)); // Remove password before returning user details
         return user.map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.notFound().build());
     }

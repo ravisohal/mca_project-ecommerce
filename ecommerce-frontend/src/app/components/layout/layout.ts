@@ -1,7 +1,8 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-layout',
@@ -14,6 +15,13 @@ import { CartService } from '../../services/cart';
   }
 })
 export class LayoutComponent {
+  public authService = inject(AuthService);
   public cartService = inject(CartService);
+  private router = inject(Router);
+
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
+  }
 }
 

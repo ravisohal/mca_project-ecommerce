@@ -16,4 +16,5 @@ export interface User {
   phoneNumber: string;
   shippingAddress: Address;
   billingAddress: Address;
+  role: "customer" | "admin";
 }

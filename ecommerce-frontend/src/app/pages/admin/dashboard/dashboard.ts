@@ -5,7 +5,12 @@ import { CommonModule } from '@angular/common';
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule],
-  template: `<div class="container"><h2 class="text-2xl font-semibold mb-4 capitalize">dashboard</h2><p>Coming soon: CRUD, filters, pagination.</p></div>`,
+  template: `
+    <div class="p-8">
+      <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+      <p class="mt-4 text-lg text-gray-600">You have special powers! You can manage orders, products, categories, and user profiles here.</p>
+    </div>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminDashboardComponent { }

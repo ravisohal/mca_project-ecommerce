@@ -238,4 +238,31 @@ public class UserService {
         }
     }
 
+    /**
+     * Checks if a user is a regular user.
+     * @param username The username of the user to check.
+     * @return True if the user is a regular user, false otherwise.
+     */
+    public boolean isUser(String username) {
+        return userRepository.existsByRole("USER");
+    }
+
+    /**
+     * Checks if a user exists by email.
+     * @param email The email of the user to check.
+     * @return True if the user exists, false otherwise.
+     */
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    /**
+     * Checks if a user exists by username.
+     * @param username The username of the user to check.
+     * @return True if the user exists, false otherwise.
+     */
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
 }

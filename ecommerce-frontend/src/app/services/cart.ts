@@ -1,5 +1,6 @@
 import { Injectable, computed, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 import { Cart } from './../models/cart';
 import { CartItem } from '../models/cart-item';
 import { Product } from '../models/product';
@@ -8,6 +9,8 @@ import { OrderService } from './order';
 import { CreateOrderRequest } from '../models/create-order-request';
 import { User } from '../models/user';
 import { tap } from 'rxjs/operators';
+import { AuthService } from './auth';
+import { Observable, of } from 'rxjs';
 
 
 const CART_KEY = 'app_cart_v1';
@@ -17,6 +20,9 @@ const EXPIRATION_DURATION_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
 @Injectable({ providedIn: 'root' })
 export class CartService {
   private orderService = inject(OrderService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  
   private platformId = inject(PLATFORM_ID);
 
   private _items = signal<CartItem[]>(this.load());
@@ -66,21 +72,26 @@ export class CartService {
     this.persist();
   }
 
-  checkout() {
-    const req: CreateOrderRequest = {
-      items: this._items().map((i) => ({ 
-        productId: i.product.id, 
-        productName: i.product.name, 
-        quantity: i.quantity, 
-        price: i.product.price, 
-        discount: i.product.discount 
-      })),
-      totalAmount: this.total(),
-      customerEmail: this.currentUser()?.email,
-    };
-    return this.orderService.create(req).pipe(
-      tap(() => this.clear())
-    );
+  checkout(): Observable<any> {
+    if (this.authService.isAuthenticated()) {
+      const req: CreateOrderRequest = {
+        items: this._items().map(item => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          quantity: item.quantity,
+          price: item.product.price,
+          discount: item.product.discount
+        })),
+        totalAmount: this.total(),
+        customerEmail: this.authService.user()?.email || '',
+      };
+      
+      return this.orderService.create(req).pipe(
+        tap(() => this.clear())
+      );
+    }
+    
+    return of(null);
   }
 
   private load(): CartItem[] {

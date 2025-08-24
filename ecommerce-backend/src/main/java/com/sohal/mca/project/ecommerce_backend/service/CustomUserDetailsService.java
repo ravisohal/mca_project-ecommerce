@@ -3,12 +3,16 @@ package com.sohal.mca.project.ecommerce_backend.service;
 import com.sohal.mca.project.ecommerce_backend.model.User;
 import com.sohal.mca.project.ecommerce_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList; // For simple empty authorities list
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Author: Ravi Sohal
@@ -37,8 +41,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
+        List<String> roles = user.getRole() != null ? List.of(user.getRole()) : new ArrayList<>();
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
         // For simplicity, we are returning a Spring Security User object with an empty list of authorities.
-        // In a real application, you would load roles/authorities from your database and assign them here.
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 }

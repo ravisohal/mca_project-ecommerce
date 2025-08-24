@@ -44,6 +44,9 @@ public class User {
     @JoinColumn(name = "billing_address_id", nullable = false)
     private Address billingAddress;
 
+    @Column(nullable = false, length = 10)
+    private String role;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 

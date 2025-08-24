@@ -90,7 +90,7 @@ public class AuthController {
         final String jwt = jwtUtil.generateToken(userDetails);
 
         Map<String, String> response = new HashMap<>();
-        response.put("jwt", jwt);
+        response.put("token", jwt);
         logger.info("User {} authenticated successfully and JWT generated.", username);
         return ResponseEntity.ok(response);
     }

@@ -1,1 +1,106 @@
-<p>address works!</p>
+<div class="user-addresses-container">
+  <div class="sidebar">
+    <div class="profile-info">
+      <h3>Welcome,</h3>
+      <h2 class="font-bold">{{ authService.user()?.username }}</h2>
+    </div>
+    <nav class="user-nav">
+      <a routerLink="/user/dashboard" routerLinkActive="active-link" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Dashboard
+      </a>
+      <a routerLink="/user/profile" routerLinkActive="active-link" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Profile
+      </a>
+      <a routerLink="/user/address" routerLinkActive="active-link" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Addresses
+      </a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <h1 class="page-title">My Addresses</h1>
+    <div class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Shipping Address</h2>
+      </div>
+
+      <div *ngIf="isFormVisible">
+        <form [formGroup]="shippingAddressForm" (ngSubmit)="onSaveAddress()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="street">Street</label>
+              <input id="street" type="text" formControlName="street">
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input id="city" type="text" formControlName="city">
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input id="state" type="text" formControlName="state">
+            </div>
+            <div class="form-group">
+              <label for="postalCode">Postal Code</label>
+              <input id="postalCode" type="text" formControlName="postalCode">
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input id="country" type="text" formControlName="country">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="cancel-button" (click)="toggleForm()">Cancel</button>
+            <button type="submit" class="save-button" [disabled]="shippingAddressForm.pristine || shippingAddressForm.invalid">Save Address</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="section-header">
+        <h2 class="section-title">Billing Address</h2>
+      </div>
+
+      <div *ngIf="isFormVisible">
+        <form [formGroup]="billingAddressForm" (ngSubmit)="onSaveAddress()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="street">Street</label>
+              <input id="street" type="text" formControlName="street">
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input id="city" type="text" formControlName="city">
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input id="state" type="text" formControlName="state">
+            </div>
+            <div class="form-group">
+              <label for="postalCode">Postal Code</label>
+              <input id="postalCode" type="text" formControlName="postalCode">
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input id="country" type="text" formControlName="country">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="cancel-button" (click)="toggleForm()">Cancel</button>
+            <button type="submit" class="save-button" [disabled]="billingAddressForm.pristine || billingAddressForm.invalid">Save Address</button>
+          </div>
+        </form>
+      </div>
+
+      <div *ngIf="!isFormVisible" class="address-list">
+        <div class="address-card" *ngIf="authService.user()?.shippingAddress">
+          <h4>Shipping Address</h4>
+          <p>{{ authService.user()?.shippingAddress?.street }}</p>
+          <p>{{ authService.user()?.shippingAddress?.city }}, {{ authService.user()?.shippingAddress?.state }} {{ authService.user()?.shippingAddress?.postalCode }}</p>
+          <p>{{ authService.user()?.shippingAddress?.country }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

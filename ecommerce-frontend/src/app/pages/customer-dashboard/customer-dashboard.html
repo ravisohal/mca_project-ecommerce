@@ -1,24 +1,49 @@
-<div class="container mx-auto p-4">
-  <h1 class="text-3xl font-bold mb-4">Welcome back</h1>
-
-  <section class="mb-8">
-    <h2 class="text-xl font-semibold mb-2">Your Orders</h2>
-    <div *ngIf="loading()">Loading...</div>
-    <div *ngIf="!loading() && orders().length === 0" class="opacity-70">No orders yet.</div>
-    <div class="grid gap-4 md:grid-cols-2" *ngIf="orders().length">
-      <div class="rounded-2xl p-4 shadow border" *ngFor="let o of orders()">
-        <div class="flex justify-between mb-2">
-          <div>Order #{{o.id}}</div>
-          <div class="font-medium">{{o.status}}</div>
-        </div>
-        <div class="text-sm opacity-80 mb-2">{{o.createdAt | date:'medium'}}</div>
-        <a [routerLink]="['/orders', o.id]" class="underline">View details</a>
-      </div>
+<div class="user-dashboard-container">
+  <div class="sidebar">
+    <div class="profile-info">
+      <h3>Welcome,</h3>
+      <h2 class="font-bold">{{ user?.username }}</h2>
     </div>
-  </section>
-
-  <section>
-    <h2 class="text-xl font-semibold mb-2">Profile</h2>
-    <a routerLink="/user/profile" class="underline">View / edit profile</a>
-  </section>
+    <nav class="user-nav">
+      <a routerLink="/user/dashboard" routerLinkActive="active-link" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Dashboard
+      </a>
+      <a routerLink="/user/profile" routerLinkActive="active-link" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Profile
+      </a>
+      <a routerLink="/user/address" routerLinkActive="active-link" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Addresses
+      </a>
+    </nav>
+  </div>
+  <div class="main-content">
+    <h1 class="page-title">Dashboard</h1>
+    
+    <section class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Your Recent Orders</h2>
+        <a routerLink="/orders" class="view-all-link">View All</a>
+      </div>
+      <div *ngIf="loading()" class="loading-state">Loading your orders...</div>
+      <div *ngIf="!loading() && orders().length === 0" class="empty-state">No orders yet. Start shopping to see your history!</div>
+      <div class="orders-grid" *ngIf="orders().length">
+        <div class="order-card" *ngFor="let o of orders()">
+          <div class="order-header">
+            <span class="order-id">#{{ o.id }}</span>
+            <span class="order-status status-{{ o.status.toLowerCase() }}">{{ o.status }}</span>
+          </div>
+          <div class="order-meta">
+            <span class="order-date">{{ o.createdAt | date:'medium' }}</span>
+          </div>
+          <div class="order-summary">
+            <p>Total: {{ o.totalAmount | number:'1.2-2' }}</p>
+            <a [routerLink]="['/orders', o.id]" class="details-link">View Details</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
