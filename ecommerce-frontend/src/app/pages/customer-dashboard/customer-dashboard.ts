@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order';
 import { AuthService } from '../../services/auth';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { Order } from '../../models/order';
 
 @Component({
@@ -16,11 +16,16 @@ import { Order } from '../../models/order';
 export class CustomerDashboardComponent {
   protected authService = inject(AuthService);
   protected orderService = inject(OrderService);
+  private router = inject(Router);
   protected readonly loading = signal<boolean>(true);
   protected readonly orders = signal<Order[]>([]);
   protected readonly user = this.authService.user();
 
   ngOnInit() {
+    if (this.authService.isAdmin()) {
+      this.router.navigate(['/admin/dashboard']);
+      return;
+    }
     if (!this.user) {
       this.loading.set(false);
       return;

@@ -1,3 +1,4 @@
+import { InteractionService } from './interaction';
 import { Injectable, computed, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
@@ -8,6 +9,7 @@ import { OrderService } from './order';
 import { tap } from 'rxjs/operators';
 import { AuthService } from './auth';
 import { Observable, of } from 'rxjs';
+import { InteractionType } from '../models/interaction-type';
 
 const CART_KEY = 'app_cart_v1';
 const EXPIRATION_KEY = 'cart_expiration';
@@ -18,6 +20,8 @@ export class CartService {
   private apiService = inject(ApiService);
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
+  private interactionService = inject(InteractionService);
+
   private router = inject(Router);
   private cartUrl = '/carts';
 
@@ -82,6 +86,7 @@ export class CartService {
 
       for (const item of this._items()) {
         this.persistCartItem(userId, item.product.id, item.quantity).subscribe();
+        this.interactionService.log(InteractionType.ADD_TO_CART, item.product.id);
       }
 
       return this.orderService.create(userId, shippingAddressId).pipe(

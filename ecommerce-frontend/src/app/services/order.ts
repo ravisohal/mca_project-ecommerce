@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Order } from '../models/order';
 import { Paged } from '../models/paged';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ApiService } from './api';
 
 
@@ -11,12 +11,16 @@ export class OrderService {
   private apiService = inject(ApiService);
   private baseUrl = `/orders`;
 
-  create(userId: number, shippingAddressId: number) {
-    return this.apiService.post<Order>(`${this.baseUrl}/place`, { userId, shippingAddressId });
+  create(userId: number, shippingAddressId: number): Observable<Order> {
+    return this.apiService.post<Order>(`${this.baseUrl}/place`, { userId, shippingAddressId }).pipe(
+                map((response: Order) => response)
+            );
   }
 
-  getById(id: number) {
-    return this.apiService.get<Order>(`${this.baseUrl}/${id}`);
+  getById(id: number): Observable<Order> {
+    return this.apiService.get<Order>(`${this.baseUrl}/${id}`).pipe(
+                map((response: Order) => response)
+            );
   }
 
   // Admin

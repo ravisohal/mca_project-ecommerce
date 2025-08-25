@@ -8,6 +8,7 @@ import { CardComponent } from '../../components/card/card';
 import { InteractionService } from '../../services/interaction';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
+import { InteractionType } from '../../models/interaction-type';
 
 @Component({
   selector: 'app-product-list',
@@ -87,7 +88,7 @@ export class ProductListComponent implements OnInit {
   }
 
   onProductClick(product: Product) {
-    this.interactionService.log('CLICK', { productId: product.id });
+    this.interactionService.log(InteractionType.VIEW, product.id);
   }
 
   addToCart(p: Product) {

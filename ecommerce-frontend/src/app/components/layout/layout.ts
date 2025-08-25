@@ -3,10 +3,11 @@ import { NgOptimizedImage } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart';
 import { AuthService } from '../../services/auth';
+import { NotificationComponent } from "../notification/notification";
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterModule, NgOptimizedImage],
+  imports: [RouterModule, NgOptimizedImage, NotificationComponent],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

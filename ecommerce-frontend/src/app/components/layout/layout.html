@@ -7,12 +7,13 @@
     <ul class="nav-links">
       <li><a routerLink="/products" routerLinkActive="active">Products</a></li>
       <li><a routerLink="/cart" routerLinkActive="active">Cart ({{ cartService.itemCount() }})</a></li>
-      <li><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
       @if (authService.isAuthenticated() && authService.isAdmin()) {
-          <li><a routerLink="/admin" routerLinkActive="active">Admin</a></li>
+          <li><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+          <li><a routerLink="/admin" routerLinkActive="active">Dashboard</a></li>
           <li><a (click)="onLogout()" class="logout-link">Logout</a></li>
       } @else if (authService.isAuthenticated()) {
-          <li><a routerLink="/user/profile" routerLinkActive="active">Profile</a></li>
+          <li><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+          <li><a routerLink="/user/dashboard" routerLinkActive="active">Dashboard</a></li>
           <li><a (click)="onLogout()" class="logout-link">Logout</a></li>
       } @else {
         <li><a routerLink="/auth/login" routerLinkActive="active">Login</a></li>
@@ -22,6 +23,7 @@
 </header>
 
 <main class="app-content">
+  <app-notification></app-notification>
   <router-outlet />
 </main>
 

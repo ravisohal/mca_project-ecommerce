@@ -49,7 +49,13 @@ export class CartComponent {
 
   checkout() {
     this.cartService.checkout().subscribe({
-      next: () => this.notificationService.success('Order placed!'),
+      next: (response) => {
+        if (response.success) {
+          this.notificationService.success('Order placed!');
+        } else {
+          this.notificationService.error('Checkout failed: ' + (response.message ?? 'Unknown error'));
+        }
+      },
       error: (err) => this.notificationService.error('Checkout failed: ' + (err?.error?.message ?? 'Unknown error')),
     });
   }
