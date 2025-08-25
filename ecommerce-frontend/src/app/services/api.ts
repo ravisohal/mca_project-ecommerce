@@ -1,5 +1,6 @@
-import { inject, Injectable, forwardRef } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
 import { catchError, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -8,10 +9,14 @@ import { environment } from '../../environments/environment';
 })
 export class ApiService {
   private readonly http = inject(HttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
   private baseUrl = `${environment.apiUrl}`;
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('token');
+    }
+    return null;
   }
 
   /**

@@ -13,7 +13,6 @@ export class NotificationService {
   private nextId = 1;
   notifications = signal<Notification[]>([]);
 
-  // generic show
   show(notification: Omit<Notification, 'id'>) {
     const newNotification: Notification = {
       ...notification,
@@ -22,11 +21,9 @@ export class NotificationService {
 
     this.notifications.update((list) => [...list, newNotification]);
 
-    // auto-dismiss after 3s
     setTimeout(() => this.dismiss(newNotification), 3000);
   }
 
-  // shorthand helpers
   success(message: string) {
     this.show({ type: 'success', message });
   }

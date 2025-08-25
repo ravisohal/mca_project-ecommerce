@@ -55,7 +55,7 @@ export class RegisterComponent {
       username: username ?? '',
       email: email ?? '',
       password: password ?? '',
-      id: '',
+      id: 0,
       phoneNumber: phoneNumber ?? '',
       shippingAddress: shippingAddress as Address,
       billingAddress: billingAddress as Address,

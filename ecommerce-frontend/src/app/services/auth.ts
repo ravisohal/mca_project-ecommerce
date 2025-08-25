@@ -1,7 +1,8 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Observable, of, switchMap } from 'rxjs';
 import { ApiService } from './api';
 import { User } from '../models/user';
-import { Observable, of, switchMap } from 'rxjs';
 import { UserService } from './user';
 
 @Injectable({
@@ -10,6 +11,7 @@ import { UserService } from './user';
 export class AuthService {
   private readonly apiService = inject(ApiService);
   private readonly userService = inject(UserService);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly authUrl = '/auth';
   private readonly usersUrl = '/users';
 
@@ -25,7 +27,10 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('token');
+    }
+    return null;
   }
 
   private setUserAndToken(token: string) {

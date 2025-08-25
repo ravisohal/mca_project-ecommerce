@@ -27,7 +27,7 @@ export class UserService {
      * @param userData The partial User object with updated fields.
      * @returns An Observable of the updated User object.
      */
-    updateUserProfile(userId: string, userData: Partial<User>): Observable<User> {
+    updateUserProfile(userId: number, userData: Partial<User>): Observable<User> {
         return this.apiService.put<User>(`${this.usersUrl}/${userId}`, userData).pipe(
             map((response: User) => response)
         );

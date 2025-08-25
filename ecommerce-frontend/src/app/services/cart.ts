@@ -1,17 +1,13 @@
 import { Injectable, computed, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { Cart } from './../models/cart';
 import { CartItem } from '../models/cart-item';
 import { Product } from '../models/product';
-import { Address } from '../models/address';
+import { ApiService } from './api';
 import { OrderService } from './order';
-import { CreateOrderRequest } from '../models/create-order-request';
-import { User } from '../models/user';
 import { tap } from 'rxjs/operators';
 import { AuthService } from './auth';
 import { Observable, of } from 'rxjs';
-
 
 const CART_KEY = 'app_cart_v1';
 const EXPIRATION_KEY = 'cart_expiration';
@@ -19,17 +15,16 @@ const EXPIRATION_DURATION_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
+  private apiService = inject(ApiService);
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
   private router = inject(Router);
-  
+  private cartUrl = '/carts';
+
   private platformId = inject(PLATFORM_ID);
 
   private _items = signal<CartItem[]>(this.load());
   readonly items = this._items.asReadonly();
-
-  currentUser = signal<User | null>(null);
-  currentAddress = signal<Address | null>(null);
 
   readonly total = computed(() =>
     this._items().reduce((sum, i) => sum + i.product.price * i.quantity, 0)
@@ -72,25 +67,33 @@ export class CartService {
     this.persist();
   }
 
+  persistCartItem(userId: number, productId: number, quantity: number): Observable<any> {
+     if (this.authService.isAuthenticated()) {
+       return this.apiService.post(`${this.cartUrl}/add`, { userId,productId, quantity });
+     }
+     return of(null);
+  }
+
+
   checkout(): Observable<any> {
     if (this.authService.isAuthenticated()) {
-      const req: CreateOrderRequest = {
-        items: this._items().map(item => ({
-          productId: item.product.id,
-          productName: item.product.name,
-          quantity: item.quantity,
-          price: item.product.price,
-          discount: item.product.discount
-        })),
-        totalAmount: this.total(),
-        customerEmail: this.authService.user()?.email || '',
-      };
-      
-      return this.orderService.create(req).pipe(
-        tap(() => this.clear())
+      const userId = this.authService.user()?.id || 0;
+      const shippingAddressId = this.authService.user()?.shippingAddress?.id || 0;
+
+      for (const item of this._items()) {
+        this.persistCartItem(userId, item.product.id, item.quantity).subscribe();
+      }
+
+      return this.orderService.create(userId, shippingAddressId).pipe(
+        tap(() => {
+          this.clear();
+          this.router.navigate(['/orders']);
+        })
       );
+    } else {
+      this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url } });
     }
-    
+
     return of(null);
   }
 
@@ -98,7 +101,7 @@ export class CartService {
     if (isPlatformBrowser(this.platformId)) {
       const expirationTime = localStorage.getItem(EXPIRATION_KEY);
       const currentTime = new Date().getTime();
-      
+
       // Check if the expiration time exists and if it has passed
       if (expirationTime && (currentTime > parseInt(expirationTime, 10))) {
         localStorage.removeItem(CART_KEY);
@@ -118,21 +121,6 @@ export class CartService {
       localStorage.setItem(EXPIRATION_KEY, expirationTimestamp.toString());
       localStorage.setItem(CART_KEY, JSON.stringify(this._items()));
     }
-  }
-
-  placeOrder() {
-    const req: CreateOrderRequest = {
-      items: this._items().map(item => ({
-        productId: item.product.id,
-        productName: item.product.name,
-        quantity: item.quantity,
-        price: item.product.price,
-        discount: item.product.discount
-      })),
-      totalAmount: this.total(),
-      customerEmail: this.currentUser()?.email,
-    };
-    return this.orderService.create(req);
   }
 
 }

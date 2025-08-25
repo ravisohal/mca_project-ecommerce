@@ -1,3 +1,4 @@
+import { NotificationService } from './../../services/notification';
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart';
@@ -13,6 +14,8 @@ import { CartItem } from '../../models/cart-item';
 })
 export class CartComponent {
   private cartService = inject(CartService);
+  private notificationService = inject(NotificationService);
+
   items = signal<CartItem[]>([]);
   total = signal(0);
 
@@ -46,8 +49,8 @@ export class CartComponent {
 
   checkout() {
     this.cartService.checkout().subscribe({
-      next: () => alert('Order placed!'),
-      error: (err) => alert('Checkout failed: ' + (err?.error?.message ?? 'Unknown error')),
+      next: () => this.notificationService.success('Order placed!'),
+      error: (err) => this.notificationService.error('Checkout failed: ' + (err?.error?.message ?? 'Unknown error')),
     });
   }
 }
