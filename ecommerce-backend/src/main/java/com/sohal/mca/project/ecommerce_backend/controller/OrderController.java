@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -97,9 +99,11 @@ public class OrderController {
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @GetMapping
     @PreAuthorize("isAuthenticated()") // Only authenticated users can view all orders
-    public ResponseEntity<List<Order>> getAllOrders() {
+    public ResponseEntity<Page<Order>> getAllOrders(@Parameter(description = "Page number to retrieve", example = "0") @RequestParam(defaultValue = "0") int page,
+                                                    @Parameter(description = "Page size", example = "10") @RequestParam(defaultValue = "10") int size) {
         logger.debug("Received request to get all orders.");
-        List<Order> orders = orderService.getAllOrders();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Order> orders = orderService.getAllOrders(pageable);
         return ResponseEntity.ok(orders);
     }
 
@@ -126,10 +130,13 @@ public class OrderController {
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @GetMapping("/user/{userId}")
     @PreAuthorize("isAuthenticated()") // Only authenticated users can view orders for a specific user
-    public ResponseEntity<List<Order>> getOrdersByUser(@Parameter(description = "ID of the user whose orders to retrieve") @PathVariable Long userId) {
+    public ResponseEntity<Page<Order>> getOrdersByUser(@Parameter(description = "ID of the user whose orders to retrieve") @PathVariable Long userId,
+                                                       @Parameter(description = "Page number to retrieve", example = "0") @RequestParam(defaultValue = "0") int page,
+                                                       @Parameter(description = "Page size", example = "10") @RequestParam(defaultValue = "10") int size) {
         logger.debug("Received request to get orders for user ID: {}", userId);
         try {
-            List<Order> orders = orderService.getOrdersByUser(userId);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Order> orders = orderService.getOrdersByUser(userId, pageable);
             return ResponseEntity.ok(orders);
         } catch (IllegalArgumentException e) {
             logger.error("Error getting orders for user ID {}: {}", userId, e.getMessage());

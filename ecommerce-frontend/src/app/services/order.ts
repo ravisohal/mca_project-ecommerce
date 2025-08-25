@@ -23,8 +23,11 @@ export class OrderService {
             );
   }
 
-  // Admin
-  list(opts: { page?: number; size?: number; status?: string } = {}): Observable<Paged<Order>> {
+  updateStatus(id: number, status: string) {
+    return this.apiService.put<Order>(`${this.baseUrl}/${id}/status`, { status });
+  }
+
+list(opts: { page?: number; size?: number; status?: string } = {}): Observable<Paged<Order>> {
     let p = new HttpParams();
     if (opts.page != null) p = p.set('page', String(opts.page));
     if (opts.size != null) p = p.set('size', String(opts.size));
@@ -32,12 +35,12 @@ export class OrderService {
     return this.apiService.get<Paged<Order>>(this.baseUrl, { params: p });
   }
 
-  updateStatus(id: number, status: string) {
-    return this.apiService.put<Order>(`${this.baseUrl}/${id}/status`, { status });
-  }
-
-  listByUser(userId: string | number) {
-  return this.apiService.get<any>(`${this.baseUrl}/user/${userId}`);
+  listByUser(userId: number, opts: { page?: number; size?: number; status?: string } = {}): Observable<Paged<Order>> {
+    let p = new HttpParams();
+    if (opts.page != null) p = p.set('page', String(opts.page));
+    if (opts.size != null) p = p.set('size', String(opts.size));
+    if (opts.status) p = p.set('status', opts.status);
+    return this.apiService.get<Paged<Order>>(`${this.baseUrl}/user/${userId}`, { params: p });
   }
 
 }

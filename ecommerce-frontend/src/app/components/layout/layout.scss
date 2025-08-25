@@ -32,6 +32,14 @@
   }
 }
 
+.notification-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  text-align: center;
+}
+
 .app-content {
   flex: 1;
   padding: 1rem;

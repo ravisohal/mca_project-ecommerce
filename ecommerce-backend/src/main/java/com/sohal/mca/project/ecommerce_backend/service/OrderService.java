@@ -14,6 +14,8 @@ import com.sohal.mca.project.ecommerce_backend.repository.OrderItemRepository;
 import com.sohal.mca.project.ecommerce_backend.repository.ProductRepository;
 import com.sohal.mca.project.ecommerce_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -210,10 +212,22 @@ public class OrderService {
      * Retrieves all orders (admin function).
      * @return A list of all orders.
      */
-    public List<Order> getAllOrders() {
+    public Page<Order> getAllOrders(Pageable pageable) {
         logger.debug("Attempting to retrieve all orders (admin).");
-        List<Order> orders = orderRepository.findAll();
-        logger.info("Retrieved {} total orders.", orders.size());
+        Page<Order> orders = orderRepository.findAll(pageable);
+        logger.info("Retrieved {} total orders.", orders.getTotalElements());
+        return orders;
+    }
+
+    public Page<Order> getOrdersByUser(Long userId, Pageable pageable) {
+        logger.debug("Attempting to retrieve orders for user ID: {} with pagination.", userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    logger.error("User with ID {} not found while fetching orders.", userId);
+                    return new IllegalArgumentException("User not found.");
+                });
+        Page<Order> orders = orderRepository.findByUser(user, pageable);
+        logger.info("Retrieved {} orders for user ID: {}.", orders.getTotalElements(), userId);
         return orders;
     }
 

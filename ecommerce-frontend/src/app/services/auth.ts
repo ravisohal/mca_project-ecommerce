@@ -52,14 +52,16 @@ export class AuthService {
     this.user.set(partialUser as User);
   }
 
-  login(username: string, password: string): Observable<any> {
+    login(username: string, password: string): Observable<any> {
     return this.apiService.post<any>(`${this.authUrl}/login`, { username, password }).pipe(
       switchMap((response) => {
         this.setUserAndToken(response.token);
-        this.userService.getUserProfile(username).subscribe({
-          next: (fullUser) => { this.user.set(fullUser); },
-        });
-        return of(response);
+        return this.userService.getUserProfile(username).pipe(
+          switchMap(fullUser => {
+            this.user.set(fullUser);
+            return of(response);
+          })
+        );
       })
     );
   }

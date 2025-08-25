@@ -4,6 +4,8 @@ import com.sohal.mca.project.ecommerce_backend.model.Order;
 import com.sohal.mca.project.ecommerce_backend.model.OrderStatus;
 import com.sohal.mca.project.ecommerce_backend.model.User;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
@@ -31,5 +33,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     boolean existsByUserIdAndStatus(User user, OrderStatus status);
 
     void deleteByUserId(User user);
+
+    Page<Order> findByUser(User user, Pageable pageable);
     
 }
