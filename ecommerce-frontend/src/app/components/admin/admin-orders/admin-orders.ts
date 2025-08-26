@@ -13,6 +13,7 @@ import { OrderStatus } from '../../../models/order-status';
 })
 export class AdminOrdersComponent {
   private orderService = inject(OrderService);
+  protected orderStatus = OrderStatus;
   orders = signal<Order[]>([]);
   page = signal(0);
 

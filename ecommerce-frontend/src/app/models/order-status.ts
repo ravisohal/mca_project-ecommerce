@@ -8,9 +8,9 @@
  */
 
 export enum OrderStatus {
-  PENDING = 'Pending',
-  PAID = 'Paid',
-  IN_FULFILLMENT = 'In-Fulfillment',
-  COMPLETED = 'Completed',
-  CANCELLED = 'Cancelled'
+    PENDING = "PENDING",
+    PROCESSING = "PROCESSING",
+    SHIPPED = "SHIPPED",
+    DELIVERED = "DELIVERED",
+    CANCELLED = "CANCELLED"
 };

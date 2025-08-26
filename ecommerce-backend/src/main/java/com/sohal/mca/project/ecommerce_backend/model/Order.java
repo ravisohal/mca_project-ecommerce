@@ -15,21 +15,21 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  * Version: 1.0
  * Description: Order class for the e-commerce application.
  * Represents an order in the e-commerce application.
- * This class can be extended to include attributes such as user, product, quantity, etc.
+ * This class can be extended to include attributes such as user, product,
+ * quantity, etc.
  */
 
- @Entity
- @Table(name = "orders")
- @Data
+@Entity
+@Table(name = "orders")
+@Data
 public class Order {
 
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-   @ManyToOne
-   @JoinColumn(name = "user_id", nullable = false)
-   private User user;
+    @Column(nullable = false)
+    private Long userid;
 
     @Column(nullable = false)
     private LocalDateTime orderDate;
@@ -39,7 +39,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status; 
+    private OrderStatus status;
 
     @ManyToOne
     @JoinColumn(name = "shipping_address_id", nullable = false)
@@ -59,7 +59,7 @@ public class Order {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         if (this.status == null) {
-            this.status = OrderStatus.PENDING; // Default status
+            this.status = OrderStatus.PENDING; 
         }
     }
 

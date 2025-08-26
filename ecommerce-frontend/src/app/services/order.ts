@@ -4,6 +4,7 @@ import { Order } from '../models/order';
 import { Paged } from '../models/paged';
 import { map, Observable } from 'rxjs';
 import { ApiService } from './api';
+import { PageResponse } from '../models/page-response';
 
 
 @Injectable({ providedIn: 'root' })
@@ -27,20 +28,20 @@ export class OrderService {
     return this.apiService.put<Order>(`${this.baseUrl}/${id}/status`, { status });
   }
 
-list(opts: { page?: number; size?: number; status?: string } = {}): Observable<Paged<Order>> {
+list(opts: { page?: number; size?: number; status?: string } = {}): Observable<PageResponse<Order>> {
     let p = new HttpParams();
-    if (opts.page != null) p = p.set('page', String(opts.page));
-    if (opts.size != null) p = p.set('size', String(opts.size));
+    if (opts.page != null) p = p.set('page', String(opts.page) || '1');
+    if (opts.size != null) p = p.set('size', String(opts.size) || '20');
     if (opts.status) p = p.set('status', opts.status);
-    return this.apiService.get<Paged<Order>>(this.baseUrl, { params: p });
+    return this.apiService.get<PageResponse<Order>>(this.baseUrl, { params: p });
   }
 
-  listByUser(userId: number, opts: { page?: number; size?: number; status?: string } = {}): Observable<Paged<Order>> {
+  listByUser(userId: number, opts: { page?: number; size?: number; status?: string } = {}): Observable<PageResponse<Order>> {
     let p = new HttpParams();
-    if (opts.page != null) p = p.set('page', String(opts.page));
-    if (opts.size != null) p = p.set('size', String(opts.size));
+    if (opts.page != null) p = p.set('page', String(opts.page) || '1');
+    if (opts.size != null) p = p.set('size', String(opts.size) || '20');
     if (opts.status) p = p.set('status', opts.status);
-    return this.apiService.get<Paged<Order>>(`${this.baseUrl}/user/${userId}`, { params: p });
+    return this.apiService.get<PageResponse<Order>>(`${this.baseUrl}/user/${userId}`, { params: p });
   }
 
 }

@@ -13,10 +13,10 @@ import { OrderStatus } from "./order-status";
 
 export interface Order {
   id: number;
-  user: User;
+  userid: number;
   orderDate: Date;
-  status: OrderStatus;
   totalAmount: number;
+  status: OrderStatus;
   customerEmail?: string;
   shippingAddress?: Address;
   orderItems: OrderItem[];

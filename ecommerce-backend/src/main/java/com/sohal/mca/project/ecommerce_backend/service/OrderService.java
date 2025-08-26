@@ -107,7 +107,7 @@ public class OrderService {
         }
 
         Order order = new Order();
-        order.setUser(user);
+        order.setUserid(user.getId());
         order.setShippingAddress(shippingAddress); // Set the Address object
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING); // Set initial status to PENDING
@@ -185,7 +185,7 @@ public class OrderService {
                     logger.error("User with ID {} not found while fetching orders.", userId);
                     return new IllegalArgumentException("User not found.");
                 });
-        List<Order> orders = orderRepository.findByUser(user);
+        List<Order> orders = orderRepository.findByUserid(user.getId());
         logger.info("Retrieved {} orders for user ID: {}.", orders.size(), userId);
         return orders;
     }
@@ -226,7 +226,7 @@ public class OrderService {
                     logger.error("User with ID {} not found while fetching orders.", userId);
                     return new IllegalArgumentException("User not found.");
                 });
-        Page<Order> orders = orderRepository.findByUser(user, pageable);
+        Page<Order> orders = orderRepository.findByUserid(user.getId(), pageable);
         logger.info("Retrieved {} orders for user ID: {}.", orders.getTotalElements(), userId);
         return orders;
     }

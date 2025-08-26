@@ -31,7 +31,10 @@ export class CustomerDashboardComponent {
       return;
     }
     this.orderService.listByUser(this.user.id).subscribe({
-      next: (res) => { this.orders.set(res.content ?? res as any); this.loading.set(false); },
+      next: (res) => { 
+        this.orders.set(res.content ?? res as any);
+        this.loading.set(false); 
+      },
       error: () => this.loading.set(false)
     });
   }

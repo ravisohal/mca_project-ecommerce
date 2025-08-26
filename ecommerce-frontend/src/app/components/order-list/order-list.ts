@@ -22,8 +22,8 @@ export class OrderListComponent implements OnInit {
   protected readonly orders = signal<Order[]>([]);
   protected readonly totalPages = signal<number>(0);
   protected readonly currentPage = signal<number>(1);
-  protected readonly pageSize = 10;
-  protected readonly OrderStatus = OrderStatus;
+  protected readonly pageSize = 20;
+  protected readonly orderStatus = OrderStatus;
 
   ngOnInit() {
     this.fetchOrders(this.currentPage());
@@ -38,10 +38,11 @@ export class OrderListComponent implements OnInit {
     }
 
     if (this.authService.isAdmin()) {
-      this.orderService.list({ page: page, size: this.pageSize }).subscribe({
-        next: (res: Paged<Order>) => {
-          this.orders.set(res.content || []);
+      this.orderService.list({ page: page - 1, size: this.pageSize }).subscribe({
+        next: (res) => {
+          this.orders.set(res.content ?? res as any);
           this.totalPages.set(res.totalPages || 0);
+          this.currentPage.set((res.number || 0) + 1);
           this.loading.set(false);
         },
         error: (err) => {
@@ -50,10 +51,11 @@ export class OrderListComponent implements OnInit {
         }
       });
     } else {
-      this.orderService.listByUser(user.id, { page: page, size: this.pageSize }).subscribe({
-        next: (res: Paged<Order>) => {
-          this.orders.set(res.content || []);
+      this.orderService.listByUser(user.id, { page: page - 1, size: this.pageSize }).subscribe({
+        next: (res) => { 
+          this.orders.set(res.content ?? res as any);
           this.totalPages.set(res.totalPages || 0);
+          this.currentPage.set((res.number || 0) + 1);
           this.loading.set(false);
         },
         error: (err) => {

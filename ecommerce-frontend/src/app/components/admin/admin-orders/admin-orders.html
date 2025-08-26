@@ -3,10 +3,11 @@
   <select #statusSelect
           class="border rounded-lg px-3 py-1"
           (change)="setStatus(order, statusSelect.value)">
-    <option [selected]="order.status==='Pending'">Pending</option>
-    <option [selected]="order.status==='Paid'">Paid</option>
-    <option [selected]="order.status==='In-Fulfillment'">In-Fulfillment</option>
-    <option [selected]="order.status==='Completed'">Completed</option>
-    <option [selected]="order.status==='Cancelled'">Cancelled</option>
+    <option [selected]="order.status===orderStatus.PENDING">Pending</option>
+    <option [selected]="order.status===orderStatus.PROCESSING">Processing</option>
+    <option [selected]="order.status===orderStatus.SHIPPED">Shipped</option>
+    <option [selected]="order.status===orderStatus.DELIVERED">Delivered</option>
+    <option [selected]="order.status===orderStatus.CANCELLED">Cancelled</option>
   </select>
 </div>
+
