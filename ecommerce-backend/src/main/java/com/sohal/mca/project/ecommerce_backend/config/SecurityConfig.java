@@ -123,11 +123,15 @@ public class SecurityConfig {
                 // and explicitly allow OPTIONS preflight requests.
                 .requestMatchers(HttpMethod.GET, "/api/1.0/products").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/api/1.0/products").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/1.0/products/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/api/1.0/products/**").permitAll()
 
                 // Allow unauthenticated access to user product catalog endpoint (e.g., /api/1.0/categories)
                 // and explicitly allow OPTIONS preflight requests.
                 .requestMatchers(HttpMethod.GET, "/api/1.0/categories").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/api/1.0/categories").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/1.0/categories/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/api/1.0/categories/**").permitAll()
 
                 // Allow unauthenticated access to Swagger UI and API docs
                 // and explicitly allow OPTIONS preflight requests for these paths.

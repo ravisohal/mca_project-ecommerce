@@ -31,13 +31,16 @@ export class CartComponent {
   removeFromCart(item: any) {
     this.cartService.remove(item.product.id);
     this.refreshCart();
+    this.notificationService.success('Item removed from cart');
   }
 
   setQty(item: any, qty: number) {
     if (qty <= 0) {
       this.cartService.remove(item.product.id);
+      this.notificationService.success('Item removed from cart');
     } else {
       this.cartService.setQuantity(item.product.id, qty);
+      this.notificationService.success('Quantity updated');
     }
     this.refreshCart();
   }
@@ -45,6 +48,7 @@ export class CartComponent {
   clearCart() {
     this.cartService.clear();
     this.refreshCart();
+    this.notificationService.success('Cart cleared');
   }
 
   checkout() {

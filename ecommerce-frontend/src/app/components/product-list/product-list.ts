@@ -1,14 +1,14 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ProductService } from '../../services/product';
 import { CartService } from '../../services/cart';
 import { Product } from '../../models/product';
 import { Category } from '../../models/category';
 import { CardComponent } from '../../components/card/card';
-import { InteractionService } from '../../services/interaction';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
-import { InteractionType } from '../../models/interaction-type';
+import { NotificationService } from '../../services/notification';
 
 @Component({
   selector: 'app-product-list',
@@ -21,8 +21,9 @@ import { InteractionType } from '../../models/interaction-type';
 export class ProductListComponent implements OnInit {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
-  private interactionService = inject(InteractionService);
-  
+  private router = inject(Router);
+  private notificationService = inject(NotificationService);
+
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
   currentPage = signal(0);
@@ -88,11 +89,12 @@ export class ProductListComponent implements OnInit {
   }
 
   onProductClick(product: Product) {
-    this.interactionService.log(InteractionType.VIEW, product.id);
+    this.router.navigate(['/products', product.id]); 
   }
 
   addToCart(p: Product) {
     this.cartService.add(p, 1);
+    this.notificationService.success('Product added to cart');
   }
 
   prevPage() {

@@ -9,9 +9,9 @@
  */
 
 export enum InteractionType {
-    VIEW = 'view',
-    ADD_TO_CART = 'add_to_cart',
-    REMOVE_FROM_CART = 'remove_from_cart',
-    PURCHASE = 'purchase',
-    REVIEW = 'review'
+    VIEW = 'VIEW',
+    ADD_TO_CART = 'ADD_TO_CART',
+    REMOVE_FROM_CART = 'REMOVE_FROM_CART',
+    PURCHASE = 'PURCHASE',
+    REVIEW = 'REVIEW'
 }

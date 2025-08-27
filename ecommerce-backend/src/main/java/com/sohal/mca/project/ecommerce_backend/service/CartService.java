@@ -73,7 +73,8 @@ public class CartService {
                     return new IllegalArgumentException("User not found.");
                 });
 
-        Optional<Cart> existingCart = cartRepository.findByUser(user);
+        Optional<Cart> existingCart = cartRepository.findByUserWithLock(user);
+
         if (existingCart.isPresent()) {
             logger.info("Found existing cart for user ID: {}", userId);
             return existingCart.get();
@@ -81,10 +82,6 @@ public class CartService {
             Cart newCart = new Cart();
             newCart.setUser(user);
             Cart savedCart = cartRepository.save(newCart);
-            // The User entity's cart field is mappedBy="user", so the relationship is owned by Cart.
-            // Updating user.setCart(savedCart) here is for the in-memory object,
-            // but the persistence is handled by the Cart side.
-            // No need to userRepository.save(user) again here for the cart relationship.
             logger.info("Created new cart with ID {} for user ID: {}", savedCart.getId(), userId);
             return savedCart;
         }

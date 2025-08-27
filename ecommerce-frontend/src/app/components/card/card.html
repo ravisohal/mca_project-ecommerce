@@ -1,10 +1,7 @@
 <div class="card-container" (click)="handleClick()">
   @if (product.imageUrl) {
-    <img
-      [src]="product.imageUrl"
-      [alt]="'Image of ' + product.name"
-      class="w-full h-48 object-cover object-center transition-transform duration-300 hover:scale-105"
-    />
+  <img [src]="product.imageUrl" [alt]="'Image of ' + product.name"
+    class="w-full h-48 object-cover object-center transition-transform duration-300 hover:scale-105" />
   }
   <div class="card-content">
     <div class="card-header">
@@ -15,12 +12,10 @@
     <div class="price-discount-row">
       <p class="product-price">₹{{ product.price }}</p>
       @if (product.discount > 0) {
-        <p class="product-discount">{{ (product.discount.valueOf() * 100) }}% Off</p>
+      <p class="product-discount">{{ (product.discount.valueOf() * 100) }}% Off</p>
       }
     </div>
-    <button
-      (click)="onAddToCart()"
-      class="add-to-cart-btn">
+    <button (click)="$event.stopPropagation(); onAddToCart()" class="add-to-cart-btn">
       Add to Cart
     </button>
   </div>
