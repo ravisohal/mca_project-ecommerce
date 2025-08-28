@@ -132,10 +132,9 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "Create a new product", description = "Create a new product with details provided in the request body.")
+    @Operation(summary = "Get product low stock", description = "Get list of product have stock below threshold.")
     @ApiResponse(responseCode = "201", description = "Product created successfully",
                  content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)))
-    @PreAuthorize("hasRole('admin')")
     @GetMapping("/low-stock")
     public ResponseEntity<List<Product>> getLowStockProducts(@Parameter(description = "Threshold value") @RequestParam int threshold) {
         logger.info("Received request to get low stock products with threshold: {}", threshold);

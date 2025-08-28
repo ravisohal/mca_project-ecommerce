@@ -71,7 +71,9 @@ public class AuthController {
                    @ApiResponse(responseCode = "401", description = "Invalid credentials")
                })
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody Map<String, String> authenticationRequest) {
+    public ResponseEntity<?> createAuthenticationToken(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Request body for placing an order", required = true,
+                                                        content = @Content(schema = @Schema(example = "{\"username\":\"username\",\"password\":\"password\"}")) )
+                                                        @RequestBody Map<String, String> authenticationRequest) {
         String username = authenticationRequest.get("username");
         String password = authenticationRequest.get("password");
 

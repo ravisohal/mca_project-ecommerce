@@ -1,0 +1,99 @@
+<div class="p-8">
+  <div class="flex justify-between items-center">
+    <h1 class="text-3xl font-bold text-gray-800">Product Management</h1>
+    <button (click)="openAddProductModal()" class="btn btn-primary px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+      </svg>
+      Add Product
+    </button>
+  </div>
+
+  <div *ngIf="showEditor()" class="mt-6 bg-white shadow rounded-xl p-4">
+    <h2 class="font-semibold mb-4">{{ editId() ? 'Edit Product' : 'Add Product' }}</h2>
+    <form [formGroup]="form" class="grid md:grid-cols-2 gap-4">
+      <label class="block">
+        <span class="text-sm text-gray-600">Name</span>
+        <input formControlName="name" class="mt-1 w-full border rounded-lg px-3 py-2" />
+      </label>
+
+      <label class="block">
+        <span class="text-sm text-gray-600">Price</span>
+        <input type="number" formControlName="price" class="mt-1 w-full border rounded-lg px-3 py-2" />
+      </label>
+
+      <label class="block md:col-span-2">
+        <span class="text-sm text-gray-600">Description</span>
+        <textarea rows="3" formControlName="description" class="mt-1 w-full border rounded-lg px-3 py-2"></textarea>
+      </label>
+
+      <label class="block">
+        <span class="text-sm text-gray-600">Stock</span>
+        <input type="number" formControlName="stock" class="mt-1 w-full border rounded-lg px-3 py-2" />
+      </label>
+
+      <label class="block">
+        <span class="text-sm text-gray-600">Image URL</span>
+        <input formControlName="imageUrl" class="mt-1 w-full border rounded-lg px-3 py-2" />
+      </label>
+
+      <label class="block">
+        <span class="text-sm text-gray-600">Category</span>
+        <select formControlName="categoryId" class="mt-1 w-full border rounded-lg px-3 py-2">
+          <option [ngValue]="null">Select category</option>
+          <option *ngFor="let c of categories()" [ngValue]="c.id">{{ c.name }}</option>
+        </select>
+      </label>
+
+      <div class="flex gap-4 mt-2 md:col-span-2">
+        <button class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:opacity-50"
+                [disabled]="form.invalid"
+                (click)="save()">
+          Save
+        </button>
+        <button class="px-4 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-400"
+                (click)="showEditor.set(false)">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="mt-6 overflow-x-auto bg-white shadow rounded-xl">
+    <table class="min-w-full text-sm text-left text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3">ID</th>
+          <th scope="col" class="px-6 py-3">Name</th>
+          <th scope="col" class="px-6 py-3">Price</th>
+          <th scope="col" class="px-6 py-3">Stock</th>
+          <th scope="col" class="px-6 py-3">Category</th>
+          <th scope="col" class="px-6 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products()" class="bg-white border-b hover:bg-gray-50">
+          <td class="px-6 py-4">{{ p.id }}</td>
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ p.name }}</th>
+          <td class="px-6 py-4">₹{{ p.price }}</td>
+          <td class="px-6 py-4">{{ p.stockQuantity }}</td>
+          <td class="px-6 py-4">{{ p.category.name }}</td>
+          <td class="px-6 py-4 flex gap-2">
+            <button (click)="editProduct(p)" class="text-indigo-600 hover:text-indigo-900 font-semibold">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            <button (click)="deleteProduct(p.id)" class="text-red-600 hover:text-red-900 font-semibold">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="!products().length" class="text-center py-4 text-gray-400">No products found.</p>
+  </div>
+</div>

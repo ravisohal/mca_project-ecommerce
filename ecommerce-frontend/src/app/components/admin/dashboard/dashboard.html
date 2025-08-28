@@ -49,7 +49,7 @@
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th scope="col" class="px-6 py-3">Order ID</th>
-                <th scope="col" class="px-6 py-3">Customer Email</th>
+                <th scope="col" class="px-6 py-3">Number of Items</th>
                 <th scope="col" class="px-6 py-3">Status</th>
                 <th scope="col" class="px-6 py-3">Date</th>
               </tr>
@@ -60,7 +60,7 @@
                   <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                     <a [routerLink]="['/admin/orders', order.id]" class="text-indigo-600 hover:underline">#{{ order.id }}</a>
                   </th>
-                  <td class="px-6 py-4">{{ order.customerEmail }}</td>
+                  <td class="px-6 py-4">{{ order.orderItems.length }}</td>
                   <td class="px-6 py-4">{{ order.status }}</td>
                   <td class="px-6 py-4">{{ order.orderDate | date:'short' }}</td>
                 </tr>
@@ -86,7 +86,7 @@
               @for (product of lowStockProducts(); track product.id) {
                 <tr class="bg-white border-b hover:bg-gray-50">
                   <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    <a [routerLink]="['/admin/products', product.id]" class="text-red-600 hover:underline">{{ product.name }}</a>
+                    <a [routerLink]="['/admin/products']" class="text-red-600 hover:underline">{{ product.name }}</a>
                   </th>
                   <td class="px-6 py-4 text-red-500 font-bold">{{ product.stockQuantity }}</td>
                 </tr>

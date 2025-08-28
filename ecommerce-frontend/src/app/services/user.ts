@@ -57,13 +57,12 @@ export class UserService {
     }
 
     /**
-      * Updates the user's profile information.
-      * @param userData The User object with updated fields.
-      * @returns An Observable of the updated User object.
-      */
-    updateProfile(userData: User): Observable<User> {
-        return this.apiService.put<User>(`${this.usersUrl}/${userData.id}`, userData).pipe(
-            map((response: User) => response)
+     * Fetches all users.
+     * @returns An Observable of the array of User objects.
+     */
+    getAll(): Observable<User[]> {
+        return this.apiService.get<User[]>(this.usersUrl).pipe(
+            map((response: User[]) => response)
         );
     }
 

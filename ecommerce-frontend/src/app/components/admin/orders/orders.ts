@@ -1,4 +1,4 @@
-import { NotificationService } from './../../../services/notification';
+import { NotificationService } from '../../../services/notification';
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,8 +12,8 @@ import { OrderStatus } from '../../../models/order-status';
   selector: 'app-admin-orders',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule],
-  templateUrl: './admin-orders.html',
-  styleUrl: './admin-orders.scss',
+  templateUrl: './orders.html',
+  styleUrl: './orders.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminOrdersComponent implements OnInit {

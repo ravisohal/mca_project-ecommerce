@@ -173,7 +173,7 @@ public class OrderController {
         }
     }
 
-    @Operation(summary = "Get orders statistics", description = "Provide orders statistics for ADMIN dashboard. Requires authentication.")
+    @Operation(summary = "Get orders dashboard metrics", description = "Provide orders statistics for ADMIN dashboard. Requires authentication.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved orders statistics",
                  content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderStatsResponse.class)))
     @ApiResponse(responseCode = "401", description = "Unauthorized")
