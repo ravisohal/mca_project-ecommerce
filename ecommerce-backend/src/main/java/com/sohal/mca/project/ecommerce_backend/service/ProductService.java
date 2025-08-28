@@ -221,4 +221,17 @@ public class ProductService {
         return products;
     }
 
+
+    /**
+     * Retrieves a list of products with a stock quantity less than or equal to a given threshold.
+     * @param threshold The stock quantity threshold.
+     * @return A list of products with low stock.
+     */
+    public List<Product> getLowStockProducts(int threshold) {
+        logger.debug("Attempting to retrieve products with stock <= {}", threshold);
+        List<Product> lowStockProducts = productRepository.findByStockQuantityLessThanEqual(threshold);
+        logger.info("Found {} products with low stock.", lowStockProducts.size());
+        return lowStockProducts;
+    }
+
 }

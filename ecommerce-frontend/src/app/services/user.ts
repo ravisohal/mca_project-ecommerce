@@ -9,7 +9,7 @@ import { Address } from '../models/address';
 export class UserService {
     private apiService = inject(ApiService);
     private usersUrl = '/users';
-    
+
     /**
      * Fetches the user profile by username.
      * @param username The username of the user.
@@ -18,6 +18,17 @@ export class UserService {
     getUserProfile(username: string): Observable<User> {
         return this.apiService.get<User>(`${this.usersUrl}/username/${username}`).pipe(
             map((response: User) => response)
+        );
+    }
+
+    /**
+     * Fetches the user's address by user ID.
+     * @param userId The ID of the user.
+     * @returns An Observable of the Address object.
+     */
+    getUserAddress(userId: number): Observable<Address> {
+        return this.apiService.get<Address>(`${this.usersUrl}/${userId}/address`).pipe(
+            map((response: Address) => response)
         );
     }
 
@@ -34,24 +45,13 @@ export class UserService {
     }
 
     /**
-     * Fetches the user's address by user ID.
-     * @param userId The ID of the user.
-     * @returns An Observable of the Address object.
-     */
-    getUserAddress(userId: string): Observable<Address> {
-        return this.apiService.get<Address>(`${this.usersUrl}/${userId}/address`).pipe(
-            map((response: Address) => response)
-        );
-    }
-
-    /**
      * Updates the user's address information.
-     * @param userId The ID of the user.
+     * @param addressId The ID of the user.
      * @param addressData The Address object with updated fields.
      * @returns An Observable of the updated Address object.
      */
-    updateUserAddress(userId: string, addressData: Address): Observable<Address> {
-        return this.apiService.put<Address>(`${this.usersUrl}/${userId}/address`, addressData).pipe(
+    updateUserAddress(addressId: number, addressData: Partial<Address>): Observable<Address> {
+        return this.apiService.put<Address>(`/addresses/${addressId}`, addressData).pipe(
             map((response: Address) => response)
         );
     }

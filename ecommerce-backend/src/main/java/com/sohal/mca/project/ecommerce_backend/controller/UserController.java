@@ -1,7 +1,8 @@
 package com.sohal.mca.project.ecommerce_backend.controller;
 
 import com.sohal.mca.project.ecommerce_backend.model.User;
-import com.sohal.mca.project.ecommerce_backend.model.Address;
+import com.sohal.mca.project.ecommerce_backend.model.UserRegistrationRequest;
+import com.sohal.mca.project.ecommerce_backend.model.UserUpdateRequest;
 import com.sohal.mca.project.ecommerce_backend.service.UserService;
 import com.sohal.mca.project.ecommerce_backend.util.ApiConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,13 +60,16 @@ public class UserController {
     @PostMapping("/register")
     @PreAuthorize("permitAll()") // Registration is public
     public ResponseEntity<User> registerUser(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "User details including username, password, email, phoneNumber, shippingAddress, and billingAddress.", required = true,
-                                              content = @Content(schema = @Schema(implementation = UserRegistrationRequest.class, example = "{\"username\":\"testuser\",\"password\":\"password123\",\"email\":\"test@example.com\",\"phoneNumber\":\"1234567890\",\"shippingAddress\":{\"street\":\"123 Main St\",\"city\":\"Anytown\",\"state\":\"ON\",\"postalCode\":\"A1A1A1\",\"country\":\"Canada\"},\"billingAddress\":{\"street\":\"123 Main St\",\"city\":\"Anytown\",\"state\":\"ON\",\"postalCode\":\"A1A1A1\",\"country\":\"Canada\"}}")))
+                                              content = @Content(schema = @Schema(implementation = UserRegistrationRequest.class, example = "{\"username\":\"testuser\",\"password\":\"password123\",\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"test@example.com\",\"phoneNumber\":\"1234567890\",\"shippingAddress\":{\"street\":\"123 Main St\",\"city\":\"Anytown\",\"state\":\"ON\",\"postalCode\":\"A1A1A1\",\"country\":\"Canada\"},\"billingAddress\":{\"street\":\"123 Main St\",\"city\":\"Anytown\",\"state\":\"ON\",\"postalCode\":\"A1A1A1\",\"country\":\"Canada\"}}")))
                                               @RequestBody UserRegistrationRequest request) {
         logger.info("Received request to register new user: {}", request.getUsername());
         try {
+            logger.debug("User registration request details: {}", request.toString());
             User newUser = new User();
             newUser.setUsername(request.getUsername());
             newUser.setPassword(request.getPassword()); // Raw password, will be hashed by service
+            newUser.setFirstname(request.getFirstname());
+            newUser.setLastname(request.getLastname());
             newUser.setEmail(request.getEmail());
             newUser.setPhoneNumber(request.getPhoneNumber());
             newUser.setRole("customer"); // Default role
@@ -80,38 +84,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    // DTO for User Registration Request
-    @Schema(name = "UserRegistrationRequest", description = "Request body for new user registration")
-    static class UserRegistrationRequest {
-        @Schema(description = "Unique username for the user", example = "testuser")
-        private String username;
-        @Schema(description = "Raw password for the user (will be hashed)", example = "password123")
-        private String password;
-        @Schema(description = "Unique email address for the user", example = "test@example.com")
-        private String email;
-        @Schema(description = "Phone number of the user", example = "1234567890")
-        private String phoneNumber;
-        @Schema(description = "Shipping address details")
-        private Address shippingAddress;
-        @Schema(description = "Billing address details")
-        private Address billingAddress;
-
-        // Getters and Setters for UserRegistrationRequest
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-        public String getPhoneNumber() { return phoneNumber; }
-        public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-        public Address getShippingAddress() { return shippingAddress; }
-        public void setShippingAddress(Address shippingAddress) { this.shippingAddress = shippingAddress; }
-        public Address getBillingAddress() { return billingAddress; }
-        public void setBillingAddress(Address billingAddress) { this.billingAddress = billingAddress; }
-    }
-
 
     @Operation(summary = "Get all users", description = "Retrieve a list of all registered users. Requires authentication.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of users",
@@ -168,12 +140,14 @@ public class UserController {
     @PreAuthorize("isAuthenticated()") // Only authenticated users can update users
     public ResponseEntity<User> updateUser(@Parameter(description = "ID of the user to update") @PathVariable Long id,
                                            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Updated user details. Include full address objects.", required = true,
-                                           content = @Content(schema = @Schema(implementation = UserUpdateRequest.class, example = "{\"email\":\"updated@example.com\",\"phoneNumber\":\"0987654321\",\"shippingAddress\":{\"street\":\"456 New St\",\"city\":\"Newtown\",\"state\":\"QC\",\"postalCode\":\"B2B2B2\",\"country\":\"Canada\"},\"billingAddress\":{\"street\":\"456 New St\",\"city\":\"Newtown\",\"state\":\"QC\",\"postalCode\":\"B2B2B2\",\"country\":\"Canada\"}}")))
+                                           content = @Content(schema = @Schema(implementation = UserUpdateRequest.class, example = "{\"firstname\":\"John\",\"lastname\":\"Doe\",\"email\":\"updated@example.com\",\"phoneNumber\":\"0987654321\",\"shippingAddress\":{\"street\":\"456 New St\",\"city\":\"Newtown\",\"state\":\"QC\",\"postalCode\":\"B2B2B2\",\"country\":\"Canada\"},\"billingAddress\":{\"street\":\"456 New St\",\"city\":\"Newtown\",\"state\":\"QC\",\"postalCode\":\"B2B2B2\",\"country\":\"Canada\"}}")))
                                            @RequestBody UserUpdateRequest request) {
         logger.info("Received request to update user ID: {}", id);
         try {
-            // Create a temporary User object for basic details
+            logger.debug("Updating user with details: First Name: {}, Last Name: {}, Email: {}, Phone Number: {}", request.getFirstname(), request.getLastname(), request.getEmail(), request.getPhoneNumber());
             User userDetails = new User();
+            userDetails.setFirstname(request.getFirstname());
+            userDetails.setLastname(request.getLastname());
             userDetails.setEmail(request.getEmail());
             userDetails.setPhoneNumber(request.getPhoneNumber());
 
@@ -192,30 +166,6 @@ public class UserController {
         }
     }
 
-    // DTO for User Update Request
-    @Schema(name = "UserUpdateRequest", description = "Request body for updating existing user details")
-    static class UserUpdateRequest {
-        @Schema(description = "New email address for the user", example = "updated@example.com")
-        private String email;
-        @Schema(description = "New phone number for the user", example = "0987654321")
-        private String phoneNumber;
-        @Schema(description = "Updated shipping address details")
-        private Address shippingAddress;
-        @Schema(description = "Updated billing address details")
-        private Address billingAddress;
-
-        // Getters and Setters for UserUpdateRequest
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-        public String getPhoneNumber() { return phoneNumber; }
-        public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-        public Address getShippingAddress() { return shippingAddress; }
-        public void setShippingAddress(Address shippingAddress) { this.shippingAddress = shippingAddress; }
-        public Address getBillingAddress() { return billingAddress; }
-        public void setBillingAddress(Address billingAddress) { this.billingAddress = billingAddress; }
-    }
-
-
     @Operation(summary = "Delete a user", description = "Delete a user account by its ID. Requires authentication.")
     @ApiResponse(responseCode = "204", description = "User deleted successfully")
     @ApiResponse(responseCode = "404", description = "User not found")
@@ -233,4 +183,5 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }

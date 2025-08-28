@@ -1,6 +1,7 @@
 package com.sohal.mca.project.ecommerce_backend.controller;
 
 import com.sohal.mca.project.ecommerce_backend.model.Order;
+import com.sohal.mca.project.ecommerce_backend.model.OrderStatsResponse;
 import com.sohal.mca.project.ecommerce_backend.model.OrderStatus;
 import com.sohal.mca.project.ecommerce_backend.service.OrderService;
 import com.sohal.mca.project.ecommerce_backend.util.ApiConstants;
@@ -98,7 +99,7 @@ public class OrderController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @GetMapping
-    @PreAuthorize("isAuthenticated()") // Only authenticated users can view all orders
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<Order>> getAllOrders(@Parameter(description = "Page number to retrieve", example = "0") @RequestParam(defaultValue = "0") int page,
                                                     @Parameter(description = "Page size", example = "10") @RequestParam(defaultValue = "10") int size) {
         logger.debug("Received request to get all orders.");
@@ -171,4 +172,33 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @Operation(summary = "Get orders statistics", description = "Provide orders statistics for ADMIN dashboard. Requires authentication.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved orders statistics",
+                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderStatsResponse.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized")
+    @ApiResponse(responseCode = "403", description = "Forbidden")
+    @GetMapping("/dashboard/metrics")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<OrderStatsResponse> getDashboardMetrics() {
+        logger.info("Received request for dashboard statistics.");
+
+        return ResponseEntity.ok(orderService.getDashboardMetrics());
+    }
+
+    @Operation(summary = "Get order counts by status",
+            description = "Returns a map of the total number of orders for each status. This is a dashboard metric.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully retrieved order status counts"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden")
+            })
+    @GetMapping("/status-count")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<OrderStatus, Long>> getOrdersByStatusCount() {
+        logger.info("Received request to get order counts by status.");
+        Map<OrderStatus, Long> counts = orderService.getOrdersByStatusCount();
+        return ResponseEntity.ok(counts);
+    }
+
 }

@@ -29,7 +29,7 @@ public class Order {
     private Long id;
 
     @Column(nullable = false)
-    private Long userid;
+    private Long user;
 
     @Column(nullable = false)
     private LocalDateTime orderDate;

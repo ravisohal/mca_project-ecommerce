@@ -3,6 +3,7 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart';
 import { CartItem } from '../../models/cart-item';
+import { Order } from '../../models/order';
 
 @Component({
   selector: 'app-cart',
@@ -53,12 +54,10 @@ export class CartComponent {
 
   checkout() {
     this.cartService.checkout().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.notificationService.success('Order placed!');
-        } else {
-          this.notificationService.error('Checkout failed: ' + (response.message ?? 'Unknown error'));
-        }
+      next: (response: Order) => {
+        this.cartService.clear();
+        this.refreshCart();
+        this.notificationService.success(`Order# ${response.id} placed!`);
       },
       error: (err) => this.notificationService.error('Checkout failed: ' + (err?.error?.message ?? 'Unknown error')),
     });

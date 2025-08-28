@@ -174,6 +174,8 @@ public class UserService {
         return userRepository.findById(id)
                 .map(existingUser -> {
                     // Update basic user details
+                    existingUser.setFirstname(userDetails.getFirstname());
+                    existingUser.setLastname(userDetails.getLastname());
                     existingUser.setEmail(userDetails.getEmail());
                     existingUser.setPhoneNumber(userDetails.getPhoneNumber());
 

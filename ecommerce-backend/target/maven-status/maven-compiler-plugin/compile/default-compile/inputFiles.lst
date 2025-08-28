@@ -16,10 +16,13 @@
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/InteractionType.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/Order.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/OrderItem.java
+/Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/OrderStatsResponse.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/OrderStatus.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/Product.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/User.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/UserInteraction.java
+/Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/UserRegistrationRequest.java
+/Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/model/UserUpdateRequest.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/repository/AddressRepository.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/repository/CartItemRepository.java
 /Users/ravisohal/Projects/MCA/project-ecommerce/ecommerce-backend/src/main/java/com/sohal/mca/project/ecommerce_backend/repository/CartRepository.java

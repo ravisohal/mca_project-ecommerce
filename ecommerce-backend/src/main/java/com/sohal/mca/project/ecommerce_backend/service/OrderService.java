@@ -5,6 +5,7 @@ import com.sohal.mca.project.ecommerce_backend.model.Address;
 import com.sohal.mca.project.ecommerce_backend.model.CartItem;
 import com.sohal.mca.project.ecommerce_backend.model.Order;
 import com.sohal.mca.project.ecommerce_backend.model.OrderItem;
+import com.sohal.mca.project.ecommerce_backend.model.OrderStatsResponse;
 import com.sohal.mca.project.ecommerce_backend.model.OrderStatus;
 import com.sohal.mca.project.ecommerce_backend.model.Product;
 import com.sohal.mca.project.ecommerce_backend.model.User;
@@ -22,7 +23,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +110,7 @@ public class OrderService {
         }
 
         Order order = new Order();
-        order.setUserid(user.getId());
+        order.setUser(user.getId());
         order.setShippingAddress(shippingAddress); // Set the Address object
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING); // Set initial status to PENDING
@@ -185,7 +188,7 @@ public class OrderService {
                     logger.error("User with ID {} not found while fetching orders.", userId);
                     return new IllegalArgumentException("User not found.");
                 });
-        List<Order> orders = orderRepository.findByUserid(user.getId());
+        List<Order> orders = orderRepository.findByUser(user.getId());
         logger.info("Retrieved {} orders for user ID: {}.", orders.size(), userId);
         return orders;
     }
@@ -209,11 +212,11 @@ public class OrderService {
     }
 
     /**
-     * Retrieves all orders (admin function).
+     * Retrieves all orders.
      * @return A list of all orders.
      */
     public Page<Order> getAllOrders(Pageable pageable) {
-        logger.debug("Attempting to retrieve all orders (admin).");
+        logger.debug("Attempting to retrieve all orders.");
         Page<Order> orders = orderRepository.findAll(pageable);
         logger.info("Retrieved {} total orders.", orders.getTotalElements());
         return orders;
@@ -226,9 +229,38 @@ public class OrderService {
                     logger.error("User with ID {} not found while fetching orders.", userId);
                     return new IllegalArgumentException("User not found.");
                 });
-        Page<Order> orders = orderRepository.findByUserid(user.getId(), pageable);
+        Page<Order> orders = orderRepository.findByUser(user.getId(), pageable);
         logger.info("Retrieved {} orders for user ID: {}.", orders.getTotalElements(), userId);
         return orders;
     }
+
+    /**
+     * Retrieves dashboard metrics including total sales and total order count.
+     * @return An OrderStatsResponse object containing the metrics.
+     */
+    public OrderStatsResponse getDashboardMetrics() {
+        logger.debug("Attempting to retrieve dashboard metrics.");
+        BigDecimal totalSales = orderRepository.calculateTotalSales();
+        long totalOrders = orderRepository.count();
+
+        OrderStatsResponse metrics = new OrderStatsResponse(totalOrders, totalSales);
+        
+        logger.info("Retrieved total sales: {} and total orders: {}", totalSales, totalOrders);
+        return metrics;
+    }
+
+    /**
+     * Retrieves the count of orders for each status.
+     * @return A Map where the key is the OrderStatus and the value is the count.
+     */
+    public Map<OrderStatus, Long> getOrdersByStatusCount() {
+        logger.info("Attempting to retrieve order counts by status.");
+        return List.of(OrderStatus.values()).stream()
+                .collect(Collectors.toMap(
+                        status -> status,
+                        orderRepository::countByStatus
+                ));
+    }
+
 
 }

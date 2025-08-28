@@ -2,7 +2,7 @@
   <div class="sidebar">
     <div class="profile-info">
       <h3>Welcome,</h3>
-      <h2 class="font-bold">{{ authService.user()?.username }}</h2>
+      <h2 class="font-bold">{{ authService.user()?.firstname }} {{ authService.user()?.lastname }}</h2>
     </div>
     <nav class="user-nav">
       <a routerLink="/user/dashboard" routerLinkActive="active-link" class="nav-item">
@@ -32,7 +32,7 @@
       </div>
 
       <div *ngIf="isFormVisible">
-        <form [formGroup]="shippingAddressForm" (ngSubmit)="onSaveAddress()">
+        <form [formGroup]="shippingAddressForm" (ngSubmit)="onSaveAddress(true)" class="address-form">
           <div class="form-grid">
             <div class="form-group">
               <label for="street">Street</label>
@@ -67,7 +67,7 @@
       </div>
 
       <div *ngIf="isFormVisible">
-        <form [formGroup]="billingAddressForm" (ngSubmit)="onSaveAddress()">
+        <form [formGroup]="billingAddressForm" (ngSubmit)="onSaveAddress(false)">
           <div class="form-grid">
             <div class="form-group">
               <label for="street">Street</label>

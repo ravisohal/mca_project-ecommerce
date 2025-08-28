@@ -2,23 +2,44 @@
   <div class="sidebar">
     <div class="profile-info">
       <h3>Welcome,</h3>
-      <h2 class="font-bold">{{ authService.user()?.username }}</h2>
+      <h2 class="font-bold">{{ authService.user()?.firstname }} {{ authService.user()?.lastname }}</h2>
     </div>
     <nav class="user-nav">
       <a routerLink="/user/dashboard" routerLinkActive="active-link" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-home">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
         Dashboard
       </a>
       <a routerLink="/orders" routerLinkActive="active-link" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>        
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-shopping-bag">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
         Orders
       </a>
       <a routerLink="/user/profile" routerLinkActive="active-link" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-user">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
         Profile
       </a>
       <a routerLink="/user/address" routerLinkActive="active-link" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-map-pin">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
         Addresses
       </a>
     </nav>
@@ -27,25 +48,37 @@
   <div class="main-content">
     <h1 class="page-title">My Profile</h1>
     <div class="section-card">
-      <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input id="username" type="text" formControlName="username">
+      <div *ngIf="isFormVisible">
+        <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="username">User Name</label>
+              <input id="username" type="text" formControlName="username">
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input id="email" type="email" formControlName="email">
+            </div>
+            <div class="form-group">
+              <label for="firstname">First Name</label>
+              <input id="firstname" type="text" formControlName="firstname">
+            </div>
+            <div class="form-group">
+              <label for="lastname">Last Name</label>
+              <input id="lastname" type="text" formControlName="lastname">
+            </div>
+
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number</label>
+              <input id="phoneNumber" type="tel" formControlName="phoneNumber">
+            </div>
           </div>
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input id="email" type="email" formControlName="email">
+          <div class="form-actions">
+            <button type="submit" class="save-button" [disabled]="profileForm.pristine || profileForm.invalid">Save
+              Changes</button>
           </div>
-          <div class="form-group">
-            <label for="phoneNumber">Phone Number</label>
-            <input id="phoneNumber" type="tel" formControlName="phoneNumber">
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="save-button" [disabled]="profileForm.pristine || profileForm.invalid">Save Changes</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>

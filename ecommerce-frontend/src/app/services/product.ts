@@ -66,4 +66,8 @@ export class ProductService {
   delete(id: number): Observable<void> {
     return this.apiService.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  getLowStockProducts(threshold: number): Observable<Product[]> {
+    return this.apiService.get<Product[]>(`${this.baseUrl}/low-stock?threshold=${threshold}`);
+  }
 }

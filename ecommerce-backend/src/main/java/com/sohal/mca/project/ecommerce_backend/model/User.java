@@ -30,6 +30,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, length = 100)
+    private String firstname;
+
+    @Column(nullable = false, length = 100)
+    private String lastname;
+
     @Column(nullable = false, length = 200, unique = true)
     private String email;
 

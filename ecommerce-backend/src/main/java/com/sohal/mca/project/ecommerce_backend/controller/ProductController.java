@@ -79,7 +79,7 @@ public class ProductController {
     @Operation(summary = "Create a new product", description = "Create a new product with details provided in the request body.")
     @ApiResponse(responseCode = "201", description = "Product created successfully",
                  content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)))
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('admin')")
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product, @RequestParam Long someLong) {
         logger.debug("Received request to create a new product.");
@@ -91,7 +91,7 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "Product updated successfully",
                  content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)))
     @ApiResponse(responseCode = "404", description = "Product not found")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('admin')")
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@Parameter(description = "ID of the product to update") @PathVariable Long id, @RequestBody Product product, @RequestParam Long someLong) {
         logger.debug("Received request to update product with ID: {}", id);
@@ -102,7 +102,7 @@ public class ProductController {
     @Operation(summary = "Delete a product by ID", description = "Delete a product from the database by its unique ID.")
     @ApiResponse(responseCode = "204", description = "Product deleted successfully")
     @ApiResponse(responseCode = "404", description = "Product not found")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@Parameter(description = "ID of the product to delete") @PathVariable Long id) {
         logger.debug("Received request to delete product with ID: {}", id);
@@ -129,6 +129,18 @@ public class ProductController {
     public ResponseEntity<List<Product>> searchProductsByName(@Parameter(description = "Keyword to search for in product names") @RequestParam String name) {
         logger.debug("Received request to search products by name: {}", name);
         List<Product> products = productService.searchProductsByName(name);
+        return ResponseEntity.ok(products);
+    }
+
+    @Operation(summary = "Create a new product", description = "Create a new product with details provided in the request body.")
+    @ApiResponse(responseCode = "201", description = "Product created successfully",
+                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)))
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/low-stock")
+    public ResponseEntity<List<Product>> getLowStockProducts(@Parameter(description = "Threshold value") @RequestParam int threshold) {
+        logger.info("Received request to get low stock products with threshold: {}", threshold);
+
+        List<Product> products = productService.getLowStockProducts(threshold);
         return ResponseEntity.ok(products);
     }
 }

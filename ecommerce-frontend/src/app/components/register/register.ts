@@ -20,6 +20,8 @@ export class RegisterComponent {
 
   registerForm = this.fb.group({
       username: ['', Validators.required],
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       phoneNumber: ['', Validators.required],
@@ -50,9 +52,11 @@ export class RegisterComponent {
     this.loading = true;
     this.error = '';
 
-    const { username, email, password, phoneNumber, shippingAddress, billingAddress } = this.registerForm.value;
+    const { username, firstname, lastname, email, password, phoneNumber, shippingAddress, billingAddress } = this.registerForm.value;
     this.authService.register({
       username: username ?? '',
+      firstname: firstname ?? '',
+      lastname: lastname ?? '',
       email: email ?? '',
       password: password ?? '',
       id: 0,
