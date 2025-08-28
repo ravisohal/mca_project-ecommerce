@@ -57,9 +57,6 @@ export class AdminCategoriesComponent implements OnInit {
     if (this.form.invalid) return;
     const payload: any = { ...this.form.value };
 
-    if (payload.categoryId) payload.category = { id: payload.categoryId };
-    delete payload.categoryId;
-
     const id = this.editId();
     const req = id == null ? this.categoryService.create(payload) : this.categoryService.update(id, payload);
 

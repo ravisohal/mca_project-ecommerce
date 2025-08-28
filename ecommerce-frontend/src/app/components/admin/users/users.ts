@@ -31,19 +31,24 @@ export class AdminUsersComponent implements OnInit {
     phoneNumber: [''],
     role: ['customer', Validators.required],
 
-    // Shipping
-    shippingStreet: [''],
-    shippingCity: [''],
-    shippingState: [''],
-    shippingPostalCode: [''],
-    shippingCountry: [''],
+    shippingAddress: this.formBuilder.group ({
+      id: [0],
+      street: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      postalCode: ['', Validators.required],
+      country: ['', Validators.required]
+    }),
 
-    // Billing
-    billingStreet: [''],
-    billingCity: [''],
-    billingState: [''],
-    billingPostalCode: [''],
-    billingCountry: [''],
+    billingAddress: this.formBuilder.group({
+      id: [0],
+      street: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      postalCode: ['', Validators.required],
+      country: ['', Validators.required]
+    })
+
   });
 
   ngOnInit(): void {
@@ -67,17 +72,24 @@ export class AdminUsersComponent implements OnInit {
         email: user.email,
         phoneNumber: user.phoneNumber,
         role: user.role,
-        shippingStreet: user.shippingAddress?.street,
-        shippingCity: user.shippingAddress?.city,
-        shippingState: user.shippingAddress?.state,
-        shippingPostalCode: user.shippingAddress?.postalCode,
-        shippingCountry: user.shippingAddress?.country,
-        billingStreet: user.billingAddress?.street,
-        billingCity: user.billingAddress?.city,
-        billingState: user.billingAddress?.state,
-        billingPostalCode: user.billingAddress?.postalCode,
-        billingCountry: user.billingAddress?.country,
+        shippingAddress: {
+          id: user.shippingAddress?.id,
+          street: user.shippingAddress?.street,
+          city: user.shippingAddress?.city,
+          state: user.shippingAddress?.state,
+          postalCode: user.shippingAddress?.postalCode,
+          country: user.shippingAddress?.country,
+        },
+        billingAddress: {
+          id: user.billingAddress?.id,
+          street: user.billingAddress?.street,
+          city: user.billingAddress?.city,
+          state: user.billingAddress?.state,
+          postalCode: user.billingAddress?.postalCode,
+          country: user.billingAddress?.country,
+        }
       });
+
     } else {
       this.editId.set(null);
       this.form.reset({ role: 'customer' });
@@ -87,13 +99,10 @@ export class AdminUsersComponent implements OnInit {
 
   save() {
     if (this.form.invalid) return;
-    const payload: any = { ...this.form.value };
-
-    if (payload.categoryId) payload.category = { id: payload.categoryId };
-    delete payload.categoryId;
+    const updateUser: any = { ...this.form.value };
 
     const id = this.editId();
-    const req = this.userService.updateUserProfile(id || 0, payload);
+    const req = this.userService.updateUserProfile(id || 0, updateUser);
 
     req.subscribe({
       next: () => {
