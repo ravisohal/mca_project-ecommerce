@@ -10,7 +10,7 @@ import com.sohal.mca.project.ecommerce_backend.repository.CartRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder; // For password hashing
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
-    private final AddressRepository addressRepository; // Inject AddressRepository
+    private final AddressRepository addressRepository; 
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -105,7 +105,7 @@ public class UserService {
     public Optional<User> authenticateUser(String username, String password) {
         logger.debug("Attempting to authenticate user: {}", username);
         return userRepository.findByUsername(username)
-                .filter(user -> passwordEncoder.matches(password, user.getPassword())) // Compare raw password with hashed one
+                .filter(user -> passwordEncoder.matches(password, user.getPassword())) 
                 .map(user -> {
                     logger.info("User '{}' authenticated successfully.", username);
                     return user;

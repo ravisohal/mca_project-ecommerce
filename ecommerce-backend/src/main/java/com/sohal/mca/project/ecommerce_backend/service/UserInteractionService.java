@@ -3,7 +3,7 @@ package com.sohal.mca.project.ecommerce_backend.service;
 import com.sohal.mca.project.ecommerce_backend.model.UserInteraction;
 import com.sohal.mca.project.ecommerce_backend.model.User;
 import com.sohal.mca.project.ecommerce_backend.model.Product;
-import com.sohal.mca.project.ecommerce_backend.model.InteractionType; // Import InteractionType enum
+import com.sohal.mca.project.ecommerce_backend.model.InteractionType; 
 import com.sohal.mca.project.ecommerce_backend.repository.UserInteractionRepository;
 import com.sohal.mca.project.ecommerce_backend.repository.UserRepository;
 import com.sohal.mca.project.ecommerce_backend.repository.ProductRepository;

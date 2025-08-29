@@ -80,7 +80,7 @@ public class CategoryController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @PostMapping
-    @PreAuthorize("isAuthenticated()") // Only authenticated users can create categories
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')") // Only authenticated users with ADMIN role can create categories
     public ResponseEntity<Category> createCategory(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Category object to be created", required = true,
                                               content = @Content(schema = @Schema(implementation = Category.class, example = "{\"name\":\"Electronics\",\"description\":\"Gadgets and electronic devices\"}")))
                                               @RequestBody Category category) {
@@ -102,7 +102,7 @@ public class CategoryController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @PutMapping("/{id}")
-    @PreAuthorize("isAuthenticated()") // Only authenticated users can update categories
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')") // Only authenticated users with ADMIN role can update categories
     public ResponseEntity<Category> updateCategory(@Parameter(description = "ID of the category to update") @PathVariable Long id,
                                               @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Updated category object", required = true,
                                               content = @Content(schema = @Schema(implementation = Category.class, example = "{\"name\":\"Updated Electronics\",\"description\":\"Updated description for electronic devices\"}")))
@@ -128,7 +128,7 @@ public class CategoryController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()") // Only authenticated users can delete categories
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')") // Only authenticated users with ADMIN role can delete categories
     public ResponseEntity<Void> deleteCategory(@Parameter(description = "ID of the category to delete") @PathVariable Long id) {
         logger.info("Received request to delete category ID: {}", id);
         if (categoryRepository.existsById(id)) {

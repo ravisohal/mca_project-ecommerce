@@ -99,7 +99,7 @@ public class OrderController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')") // Only authenticated users with ADMIN role can view all orders
     public ResponseEntity<Page<Order>> getAllOrders(@Parameter(description = "Page number to retrieve", example = "0") @RequestParam(defaultValue = "0") int page,
                                                     @Parameter(description = "Page size", example = "10") @RequestParam(defaultValue = "10") int size) {
         logger.debug("Received request to get all orders.");
@@ -156,7 +156,7 @@ public class OrderController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @PutMapping("/{id}/status")
-    @PreAuthorize("isAuthenticated()") // Only authenticated users can update order status
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')") // Only authenticated users with ADMIN role can update order status
     public ResponseEntity<Order> updateOrderStatus(@Parameter(description = "ID of the order to update") @PathVariable Long id,
                                                   @Parameter(description = "New status for the order (e.g., PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED)", example = "SHIPPED") @RequestParam OrderStatus newStatus) {
         logger.info("Received request to update status for order ID {} to: {}", id, newStatus);
@@ -179,7 +179,7 @@ public class OrderController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @GetMapping("/dashboard/metrics")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')")
     public ResponseEntity<OrderStatsResponse> getDashboardMetrics() {
         logger.info("Received request for dashboard statistics.");
 
@@ -194,7 +194,7 @@ public class OrderController {
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             })
     @GetMapping("/status-count")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')")
     public ResponseEntity<Map<OrderStatus, Long>> getOrdersByStatusCount() {
         logger.info("Received request to get order counts by status.");
         Map<OrderStatus, Long> counts = orderService.getOrdersByStatusCount();

@@ -91,7 +91,7 @@ public class UserController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @GetMapping
-    @PreAuthorize("isAuthenticated()") // Only authenticated users can view all users
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')") // Only authenticated users with ADMIN role can view all users
     public ResponseEntity<List<User>> getAllUsers() {
         logger.debug("Received request to get all users.");
         List<User> users = userService.getAllUsers();
@@ -172,7 +172,7 @@ public class UserController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()") // Only authenticated users can delete users
+    @PreAuthorize("isAuthenticated() AND hasRole('ADMIN')") // Only authenticated users with ADMIN role can delete users
     public ResponseEntity<Void> deleteUser(@Parameter(description = "ID of the user to delete") @PathVariable Long id) {
         logger.info("Received request to delete user ID: {}", id);
         try {
