@@ -49,6 +49,7 @@ export class CartService {
       discountAtAddition: 0,
       total: 0
     });
+    this.interactionService.log(InteractionType.ADD_TO_CART, product.id);
     this._items.set(items);
     this.persist();
   }
@@ -63,6 +64,7 @@ export class CartService {
 
   remove(productId: number) {
     this._items.set(this._items().filter((i) => i.product.id !== productId));
+    this.interactionService.log(InteractionType.REMOVE_FROM_CART, productId);
     this.persist();
   }
 
@@ -86,7 +88,7 @@ export class CartService {
 
       for (const item of this._items()) {
         this.persistCartItem(userId, item.product.id, item.quantity).subscribe();
-        this.interactionService.log(InteractionType.ADD_TO_CART, item.product.id);
+        this.interactionService.log(InteractionType.PURCHASE, item.product.id);
       }
 
       return this.orderService.create(userId, shippingAddressId).pipe(

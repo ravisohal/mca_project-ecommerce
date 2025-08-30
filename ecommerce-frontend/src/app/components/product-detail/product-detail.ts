@@ -35,9 +35,10 @@ export class ProductDetailComponent implements OnInit {
     this.route.paramMap.pipe(take(1)).subscribe(params => {
       const productId = params.get('id');
       if (productId) {
-        this.productService.getById(parseInt(productId, 10)).subscribe({
+        this.productService.getById(parseInt(productId, 0)).subscribe({
           next: (res) => {
             this.product.set(res);
+            this.interactionService.log(InteractionType.VIEW, this.product()?.id || 0);
             this.loading.set(false);
           },
           error: (err) => {
