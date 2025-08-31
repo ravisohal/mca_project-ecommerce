@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
         description = "API documentation for the MCA Project Ecommerce Backend"
     )
 )
+
 public class OpenApiConfig {
     // This class can be empty or used for other OpenAPI configurations
+    
 }

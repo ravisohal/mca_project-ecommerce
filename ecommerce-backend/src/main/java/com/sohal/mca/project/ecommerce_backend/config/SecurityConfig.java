@@ -135,6 +135,7 @@ public class SecurityConfig {
 
                 // Allow unauthenticated access to Swagger UI and API docs
                 // and explicitly allow OPTIONS preflight requests for these paths.
+                .requestMatchers(HttpMethod.GET, "/mcaproject/ecombackend/v3/api-docs/ecombackend-project-v1.0.json/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/error").permitAll() // Allow access to default Spring Boot error page

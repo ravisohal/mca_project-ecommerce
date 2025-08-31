@@ -15,24 +15,24 @@ The architecture follows a three-tier model:
 ## 3. API Endpoint
 The API exposes a single endpoint for generating recommendations.
 
-** Method  Endpoint    Description **
-GET	    /recommend  Fetches a list of recommended products for a specific user.
+**Method  Endpoint    Description**
+GET	    */recommend*  Fetches a list of recommended products for a specific user.
 
 ## 4. Endpoint Specifications
-URL: http://<server_address>:<port>/recommend
+**URL:** *http://<server_address>:<port>/recommend*
 
-** Parameters: **  userId (required) - The unique identifier of the user for whom to generate recommendations.
+**Parameters:**  userId (required) - The unique identifier of the user for whom to generate recommendations.
 
-** Request Example: ** GET /recommend?userId=123
+**Request Example:** GET /recommend?userId=123
 
-** Success Response: ** A JSON object containing a list of recommended product_ids.
+**Success Response:** A JSON object containing a list of recommended product_ids.
 
-** Example **
+**Example**
 [ "product_107", "product_120", "product_121", "product_124", "product_125" ]
 
-** Error Response: ** A JSON object with an error message. This occurs if the specified userId is not found in the database.
+**Error Response:** A JSON object with an error message. This occurs if the specified userId is not found in the database.
 
-** Example **
+**Example**
 { "error": "User not found in data." }
 
 ## 5. Technical Workflow and Sequence Diagram
@@ -69,15 +69,20 @@ The recommendations are converted into a JSON list and returned to the client.
 ## 6. Dependencies
 The script relies on the following R libraries. They must be installed for the API to function correctly.
 
-** Library	Function **
+**Library	Function**
 plumber	Creates the web API.
 recommenderlab	Core library for building the recommendation model.
 reshape2	Used for reshaping data (dcast).
 DBI & RMySQL	Used for connecting to and querying the MySQL database.
 
 ## 7. Model Details
-** Model: ** User-Based Collaborative Filtering (UBCF).
+**Model:** User-Based Collaborative Filtering (UBCF).
 
-** Rating System: ** A heuristic rating system based on user_interactions. This simple mapping provides a weight for each type of interaction, allowing the model to understand user preference more accurately.
+**Rating System:** A heuristic rating system based on user_interactions. This simple mapping provides a weight for each type of interaction, allowing the model to understand user preference more accurately.
 
-** Fallback Strategy: ** To handle cold-start problems and data sparsity, the API defaults to recommending the most popular products when the UBCF model cannot find suitable recommendations. This ensures a seamless user experience by always providing a list of products.
+**Fallback Strategy:** To handle cold-start problems and data sparsity, the API defaults to recommending the most popular products when the UBCF model cannot find suitable recommendations. This ensures a seamless user experience by always providing a list of products.
+
+## Badges
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Built with R](https://img.shields.io/badge/Built_with-R-blue.svg)](https://www.r-project.org/)
