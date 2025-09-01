@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor User as User (Frontend Client)
+    participant Gateway as API Gateway / Frontend
+    participant SecFilter as Spring Security FilterChain
+    participant JwtProvider as JWT Provider
+    participant CategoriesController as CategoriesController
+    participant CategoryService as CategoryService
+    participant CategoryRepo as CategoryRepository
+    participant DB as Database (MySQL)
+
+    User->>Gateway: GET /api/v1/categories
+    Gateway->>SecFilter: Forward request
+
+    SecFilter->>JwtProvider: Validate JWT
+    JwtProvider-->>SecFilter: Token valid
+    SecFilter-->>CategoriesController: Forward request
+
+    CategoriesController->>CategoryService: getAllCategories()
+    CategoryService->>CategoryRepo: findAll()
+    CategoryRepo->>DB: SELECT * FROM categories
+    DB-->>CategoryRepo: List<Category>
+    CategoryRepo-->>CategoryService: List<Category>
+    CategoryService-->>CategoriesController: List<Category>
+    CategoriesController-->>Gateway: 200 OK (List<Category>)
+    Gateway-->>User: Show category list

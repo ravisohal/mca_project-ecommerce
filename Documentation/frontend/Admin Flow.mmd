@@ -1,0 +1,28 @@
+flowchart TD
+    A([Start]) --> B[Admin Login]
+    B --> C{Authenticated?}
+    C -->|No| B
+    C -->|Yes| D[Admin Dashboard]
+
+    D --> E[Manage Products]
+    E --> E1[Add Product]
+    E --> E2[Update Product]
+    E --> E3[Delete Product]
+    E --> D
+
+    D --> F[Manage Categories]
+    F --> F1[Add Category]
+    F --> F2[Update Category]
+    F --> F3[Delete Category]
+    F --> D
+
+    D --> G[Manage Users]
+    G --> G1[View Users]
+    G --> G2[Update User Roles]
+    G --> D
+
+    D --> H[View Orders]
+    H --> H1[Update Order Status]
+    H --> D
+
+    D --> I([Logout])

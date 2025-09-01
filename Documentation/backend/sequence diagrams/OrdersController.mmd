@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    actor User as User (Frontend Client)
+    participant Gateway as API Gateway / Frontend
+    participant SecFilter as Spring Security FilterChain
+    participant JwtProvider as JWT Provider
+    participant OrdersController as OrdersController
+    participant OrderService as OrderService
+    participant OrderRepo as OrderRepository
+    participant ProdRepo as ProductRepository
+    participant DB as Database (MySQL)
+
+    User->>Gateway: POST /api/v1/orders {cartItems, userId}
+    Gateway->>SecFilter: Forward request
+
+    SecFilter->>JwtProvider: Validate JWT
+    JwtProvider-->>SecFilter: Token valid
+    SecFilter-->>OrdersController: Forward request
+
+    OrdersController->>OrderService: createOrder(userId, cartItems)
+    OrderService->>ProdRepo: validateProducts(cartItems)
+    ProdRepo->>DB: SELECT * FROM products WHERE id IN (...)
+    DB-->>ProdRepo: Product details
+    ProdRepo-->>OrderService: Products validated
+
+    OrderService->>OrderRepo: save(orderEntity)
+    OrderRepo->>DB: INSERT INTO orders (...)
+    DB-->>OrderRepo: Order saved
+    OrderRepo-->>OrderService: Order entity
+    OrderService-->>OrdersController: Order response
+    OrdersController-->>Gateway: 201 Created (Order)
+    Gateway-->>User: Show order confirmation

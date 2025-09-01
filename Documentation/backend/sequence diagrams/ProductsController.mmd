@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    actor User as User (Frontend Client)
+    participant Gateway as API Gateway / Frontend
+    participant SecFilter as Spring Security FilterChain
+    participant JwtProvider as JWT Provider
+    participant ProductsController as ProductsController
+    participant ProductService as ProductService
+    participant ProductRepo as ProductRepository
+    participant DB as Database (MySQL)
+
+    User->>Gateway: GET /api/v1/products
+    Gateway->>SecFilter: Forward request
+
+    Note over SecFilter: JWT validated for protected endpoints
+    SecFilter->>JwtProvider: Validate JWT
+    JwtProvider-->>SecFilter: Token valid
+    SecFilter-->>ProductsController: Forward request
+
+    ProductsController->>ProductService: getAllProducts()
+    ProductService->>ProductRepo: findAll()
+    ProductRepo->>DB: SELECT * FROM products
+    DB-->>ProductRepo: List<Product>
+    ProductRepo-->>ProductService: List<Product>
+    ProductService-->>ProductsController: List<Product>
+    ProductsController-->>Gateway: 200 OK (List<Product>)
+    Gateway-->>User: Show product list

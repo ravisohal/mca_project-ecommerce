@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    actor User as User (Frontend Client)
+    participant Gateway as API Gateway / Frontend
+    participant SecFilter as Spring Security FilterChain
+    participant AuthController as AuthController
+    participant AuthService as AuthService
+    participant UserRepo as UserRepository
+    participant DB as Database (MySQL)
+    participant AuthManager as AuthenticationManager
+    participant JwtProvider as JWT Provider
+
+    User->>Gateway: POST /api/v1/auth/login {username, password}
+    Gateway->>SecFilter: Forward Request
+
+    Note over SecFilter: Login endpoint is public (permitAll)
+    SecFilter-->>AuthController: Allow unauthenticated request
+
+    AuthController->>AuthService: login(username, password)
+    AuthService->>AuthManager: authenticate(username, password)
+    AuthManager->>UserRepo: loadUserByUsername
+    UserRepo->>DB: SELECT * FROM users WHERE username=?
+    DB-->>UserRepo: User entity with roles
+    UserRepo-->>AuthManager: UserDetails
+    AuthManager-->>AuthService: Authentication success
+    AuthService->>JwtProvider: generateToken(userDetails)
+    JwtProvider-->>AuthService: JWT Token
+    AuthService-->>AuthController: JWT Token
+    AuthController-->>Gateway: 200 OK {token}
+    Gateway-->>User: Store JWT for future requests

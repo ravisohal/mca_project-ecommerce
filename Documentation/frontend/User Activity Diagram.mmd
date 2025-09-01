@@ -1,0 +1,17 @@
+flowchart TD
+    A([Start]) --> B[Browse Products]
+    B -->|Click product| C[View Product Details]
+    C -->|Add to Cart| D[Shopping Cart]
+    D -->|Continue shopping| B
+    D -->|Checkout| E[Place Order]
+    E --> F{Payment Successful?}
+    F -->|Yes| G[Order Confirmed]
+    F -->|No| D[Return to Cart]
+
+    B --> H[Login / Register]
+    H --> D
+
+    G --> I[Receive Recommendations]
+    I --> B
+
+    G --> J([End])

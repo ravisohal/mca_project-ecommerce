@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor User as User (Frontend Client)
+    participant Gateway as API Gateway / Frontend
+    participant SecFilter as Spring Security FilterChain
+    participant AuthManager as AuthenticationManager
+    participant JwtProvider as JWT Provider
+    participant RecController as RecommendationController
+    participant RecService as RecommendationService
+    participant RService as R Recommendation Service (Microservice)
+    participant ProdRepo as ProductRepository
+    participant DB as Database (MySQL)
+
+    User->>Gateway: GET /api/v1/recommendations/{userId}
+    Gateway->>SecFilter: Forward Request
+
+    Note over SecFilter: Security filter validates JWT token
+    SecFilter->>JwtProvider: Validate JWT
+    JwtProvider-->>SecFilter: Token valid
+    SecFilter->>AuthManager: Authenticate user
+    AuthManager-->>SecFilter: User authenticated
+    SecFilter-->>RecController: Forward authenticated request
+
+    RecController->>RecService: getRecommendationsForUser(userId)
+    RecService->>RService: HTTP GET /recommend?userId={userId}
+    RService-->>RecService: [Product IDs JSON]
+
+    RecService->>ProdRepo: findAllById(productIds)
+    ProdRepo->>DB: SQL SELECT * FROM products WHERE id IN (...)
+    DB-->>ProdRepo: Product entities
+    ProdRepo-->>RecService: List<Product>
+    RecService-->>RecController: List<Product>
+    RecController-->>Gateway: 200 OK (List<Product>)
+    Gateway-->>User: Show recommended products

@@ -1,0 +1,54 @@
+sequenceDiagram
+    autonumber
+    participant C as Customer (Frontend)
+    participant A as AuthFilter (JWT Security)
+    participant CC as CartController (Spring Boot)
+    participant CS as CartService
+    participant R as RecommendationService (optional)
+    participant DB as MySQL Database
+
+    Note over C: Customer initiates Cart actions<br>(add, view, update, remove, clear)
+
+    C->>A: HTTP Request with JWT Token (e.g. POST /cart/add)
+    A->>A: Validate JWT (signature, expiry, roles)
+    A-->>C: 401 Unauthorized (if invalid)
+    A-->>CC: Forward request (if valid)
+
+    CC->>CS: Call appropriate service method
+    alt Add to Cart
+        CS->>DB: Check product availability (stock, active status)
+        DB-->>CS: Product details
+        CS->>DB: Insert/Update cart item for user
+        DB-->>CS: Updated cart record
+        CS-->>CC: Return success (item added)
+    end
+
+    alt View Cart
+        CS->>DB: Fetch all cart items for user
+        DB-->>CS: Cart items list
+        CS->>R: (Optional) Send cart context for recommendations
+        R-->>CS: Recommended products list
+        CS-->>CC: Return cart + recommendations
+    end
+
+    alt Update Quantity
+        CS->>DB: Validate product stock
+        DB-->>CS: Stock available/Not available
+        CS->>DB: Update quantity if valid
+        DB-->>CS: Updated record
+        CS-->>CC: Return updated cart
+    end
+
+    alt Remove Item
+        CS->>DB: Delete cart item by ID + UserID
+        DB-->>CS: Confirmation
+        CS-->>CC: Return success
+    end
+
+    alt Clear Cart
+        CS->>DB: Delete all cart items for UserID
+        DB-->>CS: Confirmation
+        CS-->>CC: Return success
+    end
+
+    CC-->>C: HTTP Response (JSON) with status + data

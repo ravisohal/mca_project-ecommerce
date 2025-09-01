@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    actor Admin as Admin (Frontend Client)
+    participant Gateway as API Gateway / Frontend
+    participant SecFilter as Spring Security FilterChain
+    participant JwtProvider as JWT Provider
+    participant UsersController as UsersController
+    participant UserService as UserService
+    participant UserRepo as UserRepository
+    participant DB as Database (MySQL)
+
+    Admin->>Gateway: GET /api/v1/users
+    Gateway->>SecFilter: Forward request
+
+    Note over SecFilter: Validate JWT + Check ROLE_ADMIN
+    SecFilter->>JwtProvider: Validate JWT
+    JwtProvider-->>SecFilter: Token valid
+    SecFilter-->>UsersController: Forward request if authorized
+
+    UsersController->>UserService: getAllUsers()
+    UserService->>UserRepo: findAll()
+    UserRepo->>DB: SELECT * FROM users
+    DB-->>UserRepo: List<User>
+    UserRepo-->>UserService: List<User>
+    UserService-->>UsersController: List<User>
+    UsersController-->>Gateway: 200 OK (List<User>)
+    Gateway-->>Admin: Show user list
