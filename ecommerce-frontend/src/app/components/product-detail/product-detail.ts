@@ -8,11 +8,12 @@ import { InteractionType } from '../../models/interaction-type';
 import { NotificationService } from '../../services/notification';
 import { firstValueFrom, take, tap } from 'rxjs';
 import { Product } from '../../models/product';
+import { RecommendationsListComponent } from '../recommendations-list/recommendations-list';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RecommendationsListComponent],
   templateUrl: './product-detail.html',
   styleUrls: ['./product-detail.scss']
 })

@@ -16,6 +16,14 @@ con <- dbConnect(
   password = "mc@Pr0j3tEc0m"
 )
 
+returnDefault <- function(rating_matrix) {
+  # If no recommendations, find the most popular products as a fallback
+  popular_products <- head(sort(colSums(rating_matrix), decreasing = TRUE), 8)
+  
+  # Return the names of the top popular products
+  return(names(popular_products))  
+}
+
 #* @get /recommend
 function(userId) {
   # Fetch interactions
@@ -65,24 +73,22 @@ FROM user_interactions;
   
   # Ensure the user exists
   if (length(target_user_index) == 0) {
-    return(list(error = "User not found in data."))
+    # Return the names of the top popular products
+    return (returnDefault(rating_matrix))
   }
   
   # Get the user's ratings from the matrix
   target_user_ratings <- rating_matrix[target_user_index, , drop = FALSE]
   
   # Get top-N recommendations for the target user
-  preds <- predict(rec, target_user_ratings, n = 5)
+  preds <- predict(rec, target_user_ratings, n = 8)
   
   recommended_items <- (as(preds, "list"))
   
   # Check if the list is empty and provide a fallback
   if (length(unlist(recommended_items)) == 0) {
-    # If no recommendations, find the most popular products as a fallback
-    popular_products <- head(sort(colSums(rating_matrix), decreasing = TRUE), 5)
-    
     # Return the names of the top popular products
-    return(list(fallback_recommendations = names(popular_products)))
+    return(returnDefault(rating_matrix))
   } else {
     return(recommended_items)
   }

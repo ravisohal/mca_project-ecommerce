@@ -133,6 +133,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/1.0/categories/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/api/1.0/categories/**").permitAll()
 
+                // Allow unauthenticated access to recommendation endpoints (e.g., /api/1.0/recommendations)
+                .requestMatchers(HttpMethod.GET, "/api/1.0/recommendations").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/api/1.0/recommendations").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/1.0/recommendations/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/api/1.0/recommendations/**").permitAll()
+
                 // Allow unauthenticated access to Swagger UI and API docs
                 // and explicitly allow OPTIONS preflight requests for these paths.
                 .requestMatchers(HttpMethod.GET, "/mcaproject/ecombackend/v3/api-docs/ecombackend-project-v1.0.json/**").permitAll()

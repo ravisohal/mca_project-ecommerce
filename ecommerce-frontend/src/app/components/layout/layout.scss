@@ -8,6 +8,11 @@
   background: #1976d2;
   color: white;
   padding: 0.5rem 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 
   .navbar {
     display: flex;
@@ -43,6 +48,7 @@
 .app-content {
   flex: 1;
   padding: 1rem;
+  margin-top: 5rem;
 }
 
 .app-footer {

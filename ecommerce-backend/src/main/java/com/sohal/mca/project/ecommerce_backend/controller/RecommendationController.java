@@ -52,7 +52,7 @@ public class RecommendationController {
     @ApiResponse(responseCode = "401", description = "Unauthorized")
     @ApiResponse(responseCode = "403", description = "Forbidden")
     @GetMapping("/{userId}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<Product>> getRecommendations(@PathVariable String userId) {
         logger.info("Fetching recommendations for user: {}", userId);
         

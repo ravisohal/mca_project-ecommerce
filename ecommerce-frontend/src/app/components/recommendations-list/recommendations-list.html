@@ -1,0 +1,25 @@
+<div class="recommendations-container">
+  <h3>Recommended for You</h3>
+  <div class="list-wrapper">
+    <div class="scroll-arrow left" (click)="scrollLeft()">&#10094;</div>
+    <div class="recommendations-list">
+      @if (isLoading()) {
+        <p>Loading recommendations...</p>
+      } @else if (error()) {
+        <p class="error">{{ error() }}</p>
+      } @else if (recommendations().length > 0) {
+        @for (product of recommendations(); track product.id) {
+          <div class="product-card">
+            <img [src]="product.imageUrl" alt="{{ product.name }}" />
+            <h4>{{ product.name }}</h4>
+            <p>{{ product.price | currency:'INR':'symbol':'1.2-2' }}</p>
+            <button class="add-to-cart-btn">Add to Cart</button>
+          </div>
+        }
+      } @else {
+        <p>No recommendations available at this time.</p>
+      }
+    </div>
+    <div class="scroll-arrow right" (click)="scrollRight()">&#10095;</div>
+  </div>
+</div>

@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart';
 import { CartItem } from '../../models/cart-item';
 import { Order } from '../../models/order';
+import { RecommendationsListComponent } from '../recommendations-list/recommendations-list';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RecommendationsListComponent],
   templateUrl: './cart.html',
   styleUrls: ['./cart.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -9,11 +9,12 @@ import { CardComponent } from '../../components/card/card';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { NotificationService } from '../../services/notification';
+import { RecommendationsListComponent } from '../recommendations-list/recommendations-list';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, CardComponent],
+  imports: [CommonModule, CardComponent, RecommendationsListComponent],
   templateUrl: './product-list.html',
   styleUrl: './product-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush 
