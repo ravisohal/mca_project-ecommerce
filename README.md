@@ -84,6 +84,7 @@ The entire system relies on a **MySQL database** for data storage, including pro
     * Open the R project in RStudio.
     * Install all required libraries: `install.packages(c("recommenderlab", "plumber", "reshape2", "DBI", "RMySQL"))`
     * Run the script that exposes the recommendation model as a web API using the `plumber` package.
+    * `plumb(file='Projects/MCA/project-ecommerce/ecommerce-r-recommender/recommender.R')$run(host = "0.0.0.0", port = 8557)`
 
 5.  **Frontend (Angular):**
     * Navigate to the frontend project directory.

@@ -33,9 +33,10 @@ export class ProductDetailComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.route.paramMap.pipe(take(1)).subscribe(params => {
+    this.route.paramMap.subscribe(params => {
       const productId = params.get('id');
-      if (productId) {
+      if (productId && !isNaN(Number(productId))) {
+        this.loading.set(true);
         this.productService.getById(parseInt(productId, 0)).subscribe({
           next: (res) => {
             this.product.set(res);

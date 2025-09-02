@@ -1,7 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { RecommendationsService } from '../../services/recommendations';
 import { Product } from '../../models/product';
+import { NotificationService } from '../../services/notification';
+import { CartService } from '../../services/cart';
 
 @Component({
   selector: 'app-recommendations-list',
@@ -11,6 +14,9 @@ import { Product } from '../../models/product';
   styleUrls: ['./recommendations-list.scss']
 })
 export class RecommendationsListComponent implements OnInit {
+  private cartService = inject(CartService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
   recommendations = signal<Product[]>([]);
   isLoading = signal(false);
   error = signal('');
@@ -50,4 +56,14 @@ export class RecommendationsListComponent implements OnInit {
       container.scrollBy({ left: 200, behavior: 'smooth' });
     }
   }
+
+  onAddToCart(product: Product): void {
+    this.cartService.add(product);
+    this.notificationService.success('Product added to cart');
+  }
+
+  onProductClick(product: Product) {
+    this.router.navigate(['/products', product.id]); 
+  }
+
 }

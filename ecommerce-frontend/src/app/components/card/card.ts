@@ -30,4 +30,5 @@ export class CardComponent {
   handleClick() {
     this.clicked.emit(this.product);
   }
+  
 }
